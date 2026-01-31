@@ -177,3 +177,48 @@ function guardarEdicion(id) {
     localStorage.setItem('bebeData', JSON.stringify(datos));
     actualizarVista();
 }
+// Función para cambiar entre Registro y Dashboards
+function cambiarPestaña(pestaña) {
+    const reg = document.getElementById('pestaña-registro');
+    const dash = document.getElementById('pestaña-dashboards');
+    const btnReg = document.getElementById('tab-registro');
+    const btnDash = document.getElementById('tab-dashboards');
+
+    if (pestaña === 'registro') {
+        reg.style.display = 'block';
+        dash.style.display = 'none';
+        btnReg.classList.add('active-tab');
+        btnDash.classList.remove('active-tab');
+    } else {
+        reg.style.display = 'none';
+        dash.style.display = 'block';
+        btnReg.classList.remove('active-tab');
+        btnDash.classList.add('active-tab');
+        actualizarDashboardLeche(); // Se actualiza al entrar
+    }
+}
+
+// La lógica del Biberón (Asegúrate de que tus registros de leche guarden el número al inicio)
+function actualizarDashboardLeche() {
+    const datos = JSON.parse(localStorage.getItem('bebeData')) || [];
+    const hoy = new Date().toLocaleDateString();
+    
+    // Filtrar leche de hoy
+    const tomasHoy = datos.filter(d => d.tipo === "Leche" && d.fecha.includes(hoy));
+    
+    let totalOz = 0;
+    tomasHoy.forEach(t => {
+        // Extraemos el número del detalle (ej: "2 oz" -> 2)
+        const num = parseFloat(t.detalle);
+        if (!isNaN(num)) totalOz += num;
+    });
+
+    const txt = document.getElementById('total-onzas-texto');
+    const filler = document.getElementById('bottle-filler');
+    
+    if(txt) txt.innerText = totalOz + " oz";
+    if(filler) {
+        const porcentaje = Math.min((totalOz / 30) * 100, 100);
+        filler.style.height = porcentaje + "%";
+    }
+}
