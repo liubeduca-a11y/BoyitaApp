@@ -199,3 +199,57 @@ function guardarEdicion(id) {
     actualizarVista();
     if(typeof actualizarBiberon === 'function') actualizarBiberon();
 }
+let periodoActual = 24; // Por defecto 24 horas
+
+function cambiarPeriodo(horas) {
+    periodoActual = horas;
+    
+    // Cambiar estilo de botones
+    document.querySelectorAll('.period-selector button').forEach(btn => btn.classList.remove('active-period'));
+    document.getElementById(`btn-${horas}h`).classList.add('active-period');
+    
+    // Actualizar texto descriptivo
+    const textos = { 24: "24 horas", 168: "7 días", 720: "último mes" };
+    document.getElementById('subtitulo-periodo').innerText = "En las últimas " + textos[horas];
+    
+    actualizarCalculosDashboard();
+}
+
+function actualizarCalculosDashboard() {
+    const datos = JSON.parse(localStorage.getItem('bebeData')) || [];
+    const ahora = new Date().getTime();
+    const limite = ahora - (periodoActual * 60 * 60 * 1000);
+    
+    // Filtrar datos por el periodo seleccionado
+    const filtrados = datos.filter(d => {
+        // Convertimos la fecha guardada a formato fecha real para comparar
+        const fechaDato = new Date(d.fecha).getTime();
+        return fechaDato > limite;
+    });
+
+    // 1. Calcular Leche
+    let totalOz = 0;
+    filtrados.forEach(d => { if(d.tipo === "Leche") totalOz += d.valor; });
+    
+    // 2. Calcular Pañales
+    const totalPanales = filtrados.filter(d => d.tipo === "Pañal").length;
+
+    // 3. Calcular Sueño (Aproximado por los minutos guardados en el detalle)
+    let minutosSueno = 0;
+    filtrados.forEach(d => {
+        if(d.tipo === "Sueño") {
+            const match = d.detalle.match(/(\d+) min/);
+            if(match) minutosSueno += parseInt(match[1]);
+        }
+    });
+
+    // Actualizar Pantalla
+    document.getElementById('total-onzas-texto').innerText = totalOz + " oz";
+    document.getElementById('stat-panales').innerText = totalPanales;
+    document.getElementById('stat-sueno').innerText = (minutosSueno / 60).toFixed(1) + "h";
+    
+    // Biberón (Meta de 32oz por día, se ajusta según el periodo)
+    let meta = (periodoActual / 24) * 32; 
+    let porcentaje = (totalOz / meta) * 100;
+    document.getElementById('bottle-filler').style.height = Math.min(porcentaje, 100) + "%";
+}
