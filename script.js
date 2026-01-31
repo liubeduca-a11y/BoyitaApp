@@ -112,15 +112,25 @@ function borrarRegistro(id) {
 function actualizarVista() {
     const lista = document.getElementById('listaRegistros');
     const datos = JSON.parse(localStorage.getItem('bebeData')) || [];
-    lista.innerHTML = datos.slice().reverse().map(d => `
-        <div class="registro-item">
-            <small>${d.fecha}</small><br>
-            <strong>${d.tipo}:</strong> ${d.detalle}
-            <button class="btn-delete" onclick="borrarRegistro(${d.id})">🗑️</button>
+    
+    lista.innerHTML = datos.slice().reverse().map((d) => `
+        <div class="registro-item" id="reg-${d.id}">
+            <div id="content-${d.id}">
+                <small>${d.fecha}</small><br>
+                <strong>${d.tipo}:</strong> <span id="text-${d.id}">${d.detalle}</span>
+                <div class="edit-controls">
+                    <button class="btn-edit" onclick="habilitarEdicion(${d.id})">✏️ Editar</button>
+                    <button class="btn-delete" onclick="borrarRegistro(${d.id})">🗑️ Borrar</button>
+                </div>
+            </div>
+            <div id="form-${d.id}" style="display:none;">
+                <input type="text" id="input-${d.id}" value="${d.detalle}" class="edit-input">
+                <button class="btn-save-mini" onclick="guardarEdicion(${d.id})">✅ Listo</button>
+                <button class="btn-cancel-mini" onclick="cancelarEdicion(${d.id})">❌</button>
+            </div>
         </div>
     `).join('');
 }
-
 function actualizarBiberon() {
     const datos = JSON.parse(localStorage.getItem('bebeData')) || [];
     const hoy = new Date().toLocaleDateString();
@@ -162,4 +172,30 @@ function descargarCSV() {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+}
+function habilitarEdicion(id) {
+    document.getElementById(`content-${id}`).style.display = 'none';
+    document.getElementById(`form-${id}`).style.display = 'block';
+}
+
+function cancelarEdicion(id) {
+    document.getElementById(`content-${id}`).style.display = 'block';
+    document.getElementById(`form-${id}`).style.display = 'none';
+}
+
+function guardarEdicion(id) {
+    let datos = JSON.parse(localStorage.getItem('bebeData')) || [];
+    const nuevoDetalle = document.getElementById(`input-${id}`).value;
+    
+    // Buscamos el registro por su ID y cambiamos solo el detalle
+    datos = datos.map(d => {
+        if(d.id === id) {
+            return { ...d, detalle: nuevoDetalle };
+        }
+        return d;
+    });
+    
+    localStorage.setItem('bebeData', JSON.stringify(datos));
+    actualizarVista();
+    if(typeof actualizarBiberon === 'function') actualizarBiberon();
 }
