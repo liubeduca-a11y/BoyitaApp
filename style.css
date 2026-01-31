@@ -1,0 +1,85 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f0f4f8;
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+.app-container {
+    max-width: 500px;
+    width: 100%;
+}
+
+header {
+    text-align: center;
+    color: #5a67d8;
+    margin-bottom: 20px;
+}
+
+.card {
+    background: white;
+    padding: 15px;
+    border-radius: 15px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+}
+
+h3 { margin-top: 0; color: #4a5568; }
+
+.full-select, input[type="number"], input[type="datetime-local"] {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border: 1px solid #cbd5e0;
+    border-radius: 8px;
+    box-sizing: border-box;
+    font-size: 16px;
+}
+
+.btn-main {
+    width: 100%;
+    background-color: #667eea;
+    color: white;
+    padding: 15px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.btn-sub {
+    flex: 1;
+    background-color: #a3b1ff;
+    color: white;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    margin: 5px;
+    font-weight: bold;
+}
+
+.btn-group { display: flex; }
+
+.btn-download {
+    width: 100%;
+    background-color: #48bb78;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 8px;
+    margin-top: 20px;
+}
+
+.registro-item {
+    background: #fff;
+    padding: 10px;
+    border-left: 5px solid #667eea;
+    margin-bottom: 5px;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.slider { width: 100%; margin: 15px 0; }
