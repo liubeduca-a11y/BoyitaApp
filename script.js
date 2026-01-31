@@ -122,3 +122,26 @@ function resetearApp() {
 // Iniciar app
 actualizarVista();
 actualizarBotonesSueno();
+function descargarCSV() {
+    const datos = JSON.parse(localStorage.getItem('bebeData')) || [];
+    if (datos.length === 0) return alert("No hay datos para descargar");
+
+    // Crear el encabezado del archivo
+    let contenido = "Fecha,Tipo,Detalle,Valor\n";
+
+    // Llenar las filas con la información
+    datos.forEach(d => {
+        let valor = d.valor ? d.valor : "";
+        contenido += `"${d.fecha}","${d.tipo}","${d.detalle}","${valor}"\n`;
+    });
+
+    // Crear el archivo y descargarlo
+    const blob = new Blob([contenido], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute("download", "historial_bebe.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
