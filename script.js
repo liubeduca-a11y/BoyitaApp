@@ -54,6 +54,7 @@ function guardarPañal() {
 
 // 5. Sueño (Modo Cronómetro)
 // En la función toggleSueno(), busca la parte donde se guarda el dato y cámbiala:
+let durmiendo = localStorage.getItem('horaInicio') !== null;
 function toggleSueno() {
     if(!durmiendo) {
         localStorage.setItem('horaInicio', new Date().toISOString());
