@@ -1,50 +1,38 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Boyita Tracker - Estable</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    <div class="app-container">
+<div class="app-container">
+    <nav class="tab-bar">
+        <button onclick="cambiarPestaña('registro')" id="tab-registro" class="active-tab">📝 Registro</button>
+        <button onclick="cambiarPestaña('dashboards')" id="tab-dashboards">📊 Resumen</button>
+    </nav>
+
+    <div id="pestaña-registro">
         <header>
             <h1>🍼 Boyita Tracker</h1>
             <p id="fecha-actual"></p>
         </header>
 
-        <div class="card">
-            <h3>Leche</h3>
-            <div class="btn-group">
-                <button onclick="setOz(1)">1 oz</button>
-                <button onclick="setOz(1.5)">1.5 oz</button>
-                <button onclick="setOz(2)">2 oz</button>
+        <h3>Historial Hoy</h3>
+        <div id="listaRegistros"></div>
+    </div>
+
+    <div id="pestaña-dashboards" style="display: none;">
+        <header>
+            <h1>📊 Resumen de Boyita</h1>
+        </header>
+
+        <div class="card" style="text-align: center;">
+            <h3>Consumo de Hoy</h3>
+            <div class="bottle">
+                <div id="bottle-filler" class="water"></div>
             </div>
-            <input type="number" id="onzas" inputmode="decimal" placeholder="Onzas manual...">
-            <input type="text" id="notaLeche" placeholder="Nota de la toma...">
-            <button onclick="guardarAlimento()" class="btn-main">Guardar Toma</button>
+            <p id="total-onzas-texto" style="font-size: 28px; font-weight: bold; color: #6366f1;">0 oz</p>
+            <p style="font-size: 12px; color: #666;">Meta diaria: 30 oz</p>
+        </div>
+        
         </div>
 
-        <div class="card">
-            <h3>Pañales</h3>
-            <select id="tipoPañal" onchange="cambiarVistaPañal()" class="full-select">
-                <option value="pipi">Pipi 💦</option>
-                <option value="popo">Popo 💩</option>
-            </select>
-            <div id="opcionPipi">
-                <p>Nivel:</p>
-                <input type="range" id="nivelPipi" min="1" max="3" step="1" class="slider">
-                <div class="range-labels"><span>Poco</span><span>Medio</span><span>Lleno</span></div>
-            </div>
-            <div id="opcionPopo" style="display:none;">
-                <p>Textura:</p>
-                <input type="range" id="texturaPopo" min="1" max="4" step="1" class="slider">
-                <div class="range-labels"><span>Líq.</span><span>Past.</span><span>Dura</span><span>Sangre</span></div>
-            </div>
-            <input type="text" id="notaPañal" placeholder="Nota del pañal...">
-            <button onclick="guardarPañal()" class="btn-main">Guardar Pañal</button>
-        </div>
-
+    <button onclick="descargarCSV()" class="btn-main" style="background-color: #10b981; margin-top: 20px;">📥 Descargar CSV</button>
+    <button onclick="resetearApp()" class="btn-reset">Borrar todo</button>
+</div>
 function toggleSueno() {
     const btn = document.getElementById('btn-sueno');
     const detalleDiv = document.getElementById('detalle-despertar');
