@@ -1,98 +1,124 @@
-// VARIABLES GLOBALES
-let tiempoInicioSueno = localStorage.getItem('inicioSuenoTemp');
+// 1. Mostrar fecha
+document.getElementById('fecha-actual').innerText = new Date().toLocaleDateString();
 
-function sumarOnzas(cant) {
-    document.getElementById('onzas').value = cant;
+// 2. Funciones de Navegación
+function mostrarSeccion(sec) {
+    document.getElementById('seccion-registro').style.display = sec === 'registro' ? 'block' : 'none';
+    document.getElementById('seccion-dashboard').style.display = sec === 'dashboard' ? 'block' : 'none';
+    if(sec === 'dashboard') actualizarBiberon();
 }
 
-function mostrarOpcionesPañal() {
+// 3. Alimentación
+function setOz(n) { document.getElementById('onzas').value = n; }
+
+function guardarAlimento() {
+    const oz = document.getElementById('onzas').value;
+    if(!oz) return alert("Pon las onzas");
+    guardarDato({ tipo: "Leche", detalle: oz + " oz", valor: parseFloat(oz) });
+    document.getElementById('onzas').value = "";
+}
+
+// 4. Pañales
+function cambiarVistaPañal() {
     const tipo = document.getElementById('tipoPañal').value;
     document.getElementById('opcionPipi').style.display = tipo === 'pipi' ? 'block' : 'none';
     document.getElementById('opcionPopo').style.display = tipo === 'popo' ? 'block' : 'none';
 }
 
-function controlarSueno() {
-    const ahora = new Date().toISOString();
-    localStorage.setItem('inicioSuenoTemp', ahora);
-    actualizarInterfazSueno();
+function guardarPañal() {
+    const tipo = document.getElementById('tipoPañal').value;
+    let det = "";
+    if(tipo === 'pipi') {
+        const niveles = ["Poco", "Medio", "Lleno"];
+        det = "Pipi: " + niveles[document.getElementById('nivelPipi').value - 1];
+    } else {
+        const texturas = ["Líquida", "Pastosa", "Dura", "Con Sangre"];
+        det = "Popo: " + texturas[document.getElementById('texturaPopo').value - 1];
+    }
+    guardarDato({ tipo: "Pañal", detalle: det });
 }
 
-function actualizarInterfazSueno() {
-    const temp = localStorage.getItem('inicioSuenoTemp');
-    const btn = document.getElementById('btn-sueno-accion');
-    if(temp) {
-        btn.innerText = "¡Está durmiendo! (Toca al despertar)";
-        btn.style.backgroundColor = "#ed8936";
-        document.getElementById('detalle-despertar').style.display = "block";
+// 5. Sueño (Modo Cronómetro)
+let durmiendo = localStorage.getItem('horaInicio') !== null;
+
+function toggleSueno() {
+    if(!durmiendo) {
+        localStorage.setItem('horaInicio', new Date().toISOString());
+        durmiendo = true;
+        actualizarBotonesSueno();
     } else {
-        btn.innerText = "Iniciar Sueño 🌙";
-        btn.style.backgroundColor = "#4a5568";
-        document.getElementById('detalle-despertar').style.display = "none";
+        const inicio = new Date(localStorage.getItem('horaInicio'));
+        const fin = new Date();
+        const estado = document.getElementById('estadoDespertar').value;
+        const duracion = Math.round((fin - inicio) / 1000 / 60); // minutos
+        
+        guardarDato({ tipo: "Sueño", detalle: `Durmió ${duracion} min (${estado})` });
+        
+        localStorage.removeItem('horaInicio');
+        durmiendo = false;
+        actualizarBotonesSueno();
     }
 }
 
-function finalizarSueno() {
-    const inicio = localStorage.getItem('inicioSuenoTemp');
-    const fin = new Date().toISOString();
-    const estado = document.getElementById('estadoDespertar').value;
-    
-    salvarEnMemoria({
-        fecha: new Date().toLocaleString(),
-        tipo: "Sueño",
-        detalle: `Durmió de ${new Date(inicio).toLocaleTimeString()} a ${new Date(fin).toLocaleTimeString()} (${estado})`,
-        timestamp: new Date().getTime(),
-        onzas: 0
-    });
-    
-    localStorage.removeItem('inicioSuenoTemp');
-    actualizarInterfazSueno();
+function actualizarBotonesSueno() {
+    const btn = document.getElementById('btn-sueno');
+    const detalle = document.getElementById('detalle-despertar');
+    if(durmiendo) {
+        btn.innerText = "¡Despertó! ☀️";
+        btn.style.backgroundColor = "#f59e0b";
+        detalle.style.display = "block";
+    } else {
+        btn.innerText = "Empezó a dormir 🌙";
+        btn.style.backgroundColor = "#4a5568";
+        detalle.style.display = "none";
+    }
 }
 
-function salvarEnMemoria(nuevo) {
-    let historial = JSON.parse(localStorage.getItem('datosBebe')) || [];
-    historial.push(nuevo);
-    localStorage.setItem('datosBebe', JSON.stringify(historial));
+// 6. Base de Datos Local
+function guardarDato(obj) {
+    obj.fecha = new Date().toLocaleString();
+    obj.id = Date.now();
+    let datos = JSON.parse(localStorage.getItem('bebeData')) || [];
+    datos.push(obj);
+    localStorage.setItem('bebeData', JSON.stringify(datos));
     actualizarVista();
 }
 
-function eliminarRegistro(index) {
-    if(confirm("¿Eliminar este registro?")) {
-        let historial = JSON.parse(localStorage.getItem('datosBebe')) || [];
-        historial.splice(index, 1);
-        localStorage.setItem('datosBebe', JSON.stringify(historial));
-        actualizarVista();
-    }
+function borrarRegistro(id) {
+    let datos = JSON.parse(localStorage.getItem('bebeData')) || [];
+    datos = datos.filter(d => d.id !== id);
+    localStorage.setItem('bebeData', JSON.stringify(datos));
+    actualizarVista();
 }
 
-function mostrarSeccion(sec) {
-    document.getElementById('seccion-registro').style.display = sec === 'registro' ? 'block' : 'none';
-    document.getElementById('seccion-dashboard').style.display = sec === 'dashboard' ? 'block' : 'none';
-    if(sec === 'dashboard') cargarDashboard(24);
+function actualizarVista() {
+    const lista = document.getElementById('listaRegistros');
+    const datos = JSON.parse(localStorage.getItem('bebeData')) || [];
+    lista.innerHTML = datos.slice().reverse().map(d => `
+        <div class="registro-item">
+            <small>${d.fecha}</small><br>
+            <strong>${d.tipo}:</strong> ${d.detalle}
+            <button class="btn-delete" onclick="borrarRegistro(${d.id})">🗑️</button>
+        </div>
+    `).join('');
 }
 
-function cargarDashboard(horas) {
-    const datos = JSON.parse(localStorage.getItem('datosBebe')) || [];
-    const ahora = new Date().getTime();
-    const limite = ahora - (horas * 60 * 60 * 1000);
-    
-    const filtrados = datos.filter(d => new Date(d.fecha).getTime() > limite);
-    
-    let totalOz = 0;
-    filtrados.forEach(d => { if(d.tipo === "Leche") totalOz += parseFloat(d.onzas); });
-
-    // Animación biberón (máximo 30oz para el ejemplo)
-    let porcentaje = (totalOz / 30) * 100;
+function actualizarBiberon() {
+    const datos = JSON.parse(localStorage.getItem('bebeData')) || [];
+    const hoy = new Date().toLocaleDateString();
+    let total = 0;
+    datos.forEach(d => {
+        if(d.tipo === "Leche" && d.fecha.includes(hoy)) total += d.valor;
+    });
+    document.getElementById('total-onzas-texto').innerText = total + " oz hoy";
+    let porcentaje = (total / 32) * 100; // 32oz como meta
     document.getElementById('bottle-filler').style.height = Math.min(porcentaje, 100) + "%";
-    document.getElementById('total-onzas-text').innerText = totalOz + " oz en las últimas " + horas + "h";
 }
 
 function resetearApp() {
-    if(confirm("¿ESTÁS SEGURO? Se borrarán todos los datos permanentemente.")) {
-        localStorage.clear();
-        location.reload();
-    }
+    if(confirm("¿Borrar todo?")) { localStorage.clear(); location.reload(); }
 }
 
-// Inicialización
-actualizarInterfazSueno();
-// (Copia el resto de funciones de guardado del script anterior adaptándolas...)
+// Iniciar app
+actualizarVista();
+actualizarBotonesSueno();
