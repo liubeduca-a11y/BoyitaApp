@@ -10,6 +10,7 @@ function guardarDato(obj) {
     datos.push(obj);
     localStorage.setItem('bebeData', JSON.stringify(datos));
     actualizarVista();
+    actualizarDashboardLeche(); // Mantiene el biberón al día al guardar
 }
 
 // 3. LECHE Y PAÑALES
@@ -22,7 +23,6 @@ function guardarAlimento() {
     guardarDato({ tipo: "Leche", detalle: `${oz} oz ${nota ? '('+nota+')' : ''}` });
     document.getElementById('onzas').value = "";
     document.getElementById('notaLeche').value = "";
-    actualizarDashboardLeche();
 }
 
 function cambiarVistaPañal() {
@@ -37,57 +37,47 @@ function guardarPañal() {
     let det = "";
 
     if (tipo === 'pipi') {
-        // Obtenemos el valor del slider de pipi (1, 2 o 3)
         const nivel = document.getElementById('nivelPipi').value;
         const etiquetas = ["Poco", "Medio", "Lleno"];
-        det = "Pipi: " + etiquetas[nivel - 1]; // nivel-1 porque los arrays empiezan en 0
+        det = "Pipi: " + etiquetas[nivel - 1];
     } else {
-        // Obtenemos el valor del slider de popo (1 al 4)
         const textura = document.getElementById('texturaPopo').value;
         const etiquetas = ["Líquida", "Pastosa", "Dura", "Con Sangre"];
         det = "Popo: " + etiquetas[textura - 1];
     }
 
     if (nota) det += ` - Nota: ${nota}`;
-
     guardarDato({ tipo: "Pañal", detalle: det });
-    
-    // Limpiar la nota después de guardar
     document.getElementById('notaPañal').value = "";
 }
 
 // 4. SUEÑO
 function toggleSueno() {
-    if(!durmiendo) {
-        // INICIO DEL SUEÑO
+    const btn = document.getElementById('btn-sueno');
+    const detalleDiv = document.getElementById('detalle-despertar');
+    const inputNota = document.getElementById('notaSueno');
+    const selectEstado = document.getElementById('estadoDespertar');
+
+    if (!durmiendo) {
         localStorage.setItem('horaInicio', new Date().toISOString());
         durmiendo = true;
     } else {
-        // FIN DEL SUEÑO (DESPERTAR)
-        const inicio = new Date(localStorage.getItem('horaInicio'));
-        const fin = new Date();
-        const duracionMinutos = Math.round((fin - inicio) / 1000 / 60);
-        
-        // --- AQUÍ ESTÁ LA CORRECCIÓN ---
-        const estado = document.getElementById('estadoDespertar').value;
-        const notaAdicional = document.getElementById('notaSueno').value; // Capturamos la nota
-        
-        let detalleFinal = `Durmió ${duracionMinutos} min (${estado})`;
-        if(notaAdicional) {
-            detalleFinal += ` - Nota: ${notaAdicional}`; // La concatenamos al detalle
+        const horaInicioStr = localStorage.getItem('horaInicio');
+        if (horaInicioStr) {
+            const inicio = new Date(horaInicioStr);
+            const fin = new Date();
+            const duracion = Math.round((fin - inicio) / 1000 / 60);
+            const estado = selectEstado.value;
+            const nota = inputNota.value.trim();
+            
+            let det = `Durmió ${duracion} min (${estado})`;
+            if (nota !== "") det += ` - Nota: ${nota}`;
+
+            guardarDato({ tipo: "Sueño", detalle: det });
         }
-        // -------------------------------
-
-        guardarDato({ 
-            tipo: "Sueño", 
-            detalle: detalleFinal 
-        });
-
         localStorage.removeItem('horaInicio');
         durmiendo = false;
-        
-        // Limpiamos el campo de notas para la próxima vez
-        document.getElementById('notaSueno').value = "";
+        inputNota.value = ""; 
     }
     actualizarBotonesSueno();
 }
@@ -106,7 +96,7 @@ function actualizarBotonesSueno() {
     }
 }
 
-// 5. HISTORIAL
+// 5. HISTORIAL Y EDICIÓN
 function actualizarVista() {
     const lista = document.getElementById('listaRegistros');
     const datos = JSON.parse(localStorage.getItem('bebeData')) || [];
@@ -121,7 +111,6 @@ function actualizarVista() {
                     <button onclick="borrarRegistro(${d.id})" style="color: #f56565; border: none; background: none; font-size: 13px; cursor: pointer; padding: 0;">🗑️ Borrar</button>
                 </div>
             </div>
-            
             <div id="form-${d.id}" style="display:none;">
                 <input type="text" id="input-${d.id}" value="${d.detalle}" style="width: 80%; padding: 5px; border: 1px solid #6366f1; border-radius: 5px;">
                 <button onclick="guardarEdicion(${d.id})" style="background: #10b981; color: white; border: none; border-radius: 5px; padding: 5px 10px;">✅</button>
@@ -131,56 +120,36 @@ function actualizarVista() {
     `).join('');
 }
 
-function descargarCSV() {
-    const datos = JSON.parse(localStorage.getItem('bebeData')) || [];
-    let csv = "Fecha,Tipo,Detalle\n" + datos.map(d => `"${d.fecha}","${d.tipo}","${d.detalle}"`).join("\n");
-    const blob = new Blob([csv], {type: 'text/csv'});
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url; a.download = "boyita_tracker.csv"; a.click();
-}
-
-function resetearApp() {
-    if(confirm("¿Borrar todo?")) { localStorage.clear(); location.reload(); }
-}
-
-// INICIO AL CARGAR
-actualizarVista();
-actualizarBotonesSueno();
-// Función para eliminar un registro
-function borrarRegistro(id) 
-actualizarDashboardLeche();{
+function borrarRegistro(id) {
     if(confirm("¿Seguro que quieres borrar este registro?")) {
         let datos = JSON.parse(localStorage.getItem('bebeData')) || [];
         datos = datos.filter(d => d.id !== id);
         localStorage.setItem('bebeData', JSON.stringify(datos));
         actualizarVista();
+        actualizarDashboardLeche();
     }
 }
 
-// Función para mostrar el cuadrito de edición
 function habilitarEdicion(id) {
     document.getElementById(`content-${id}`).style.display = 'none';
     document.getElementById(`form-${id}`).style.display = 'block';
 }
 
-// Función para guardar el cambio editado
-function guardarEdicion(id) 
-actualizarDashboardLeche();{
+function guardarEdicion(id) {
     let datos = JSON.parse(localStorage.getItem('bebeData')) || [];
     const nuevoDetalle = document.getElementById(`input-${id}`).value;
     
     datos = datos.map(d => {
-        if (d.id === id) {
-            return { ...d, detalle: nuevoDetalle };
-        }
+        if (d.id === id) { return { ...d, detalle: nuevoDetalle }; }
         return d;
     });
     
     localStorage.setItem('bebeData', JSON.stringify(datos));
     actualizarVista();
+    actualizarDashboardLeche();
 }
-// Función para cambiar entre Registro y Dashboards
+
+// 6. DASHBOARDS Y NAVEGACIÓN
 function cambiarPestaña(pestaña) {
     const reg = document.getElementById('pestaña-registro');
     const dash = document.getElementById('pestaña-dashboards');
@@ -197,21 +166,17 @@ function cambiarPestaña(pestaña) {
         dash.style.display = 'block';
         btnReg.classList.remove('active-tab');
         btnDash.classList.add('active-tab');
-        actualizarDashboardLeche(); // Se actualiza al entrar
+        actualizarDashboardLeche();
     }
 }
 
-// La lógica del Biberón (Asegúrate de que tus registros de leche guarden el número al inicio)
 function actualizarDashboardLeche() {
     const datos = JSON.parse(localStorage.getItem('bebeData')) || [];
     const hoy = new Date().toLocaleDateString();
-    
-    // Filtrar leche de hoy
     const tomasHoy = datos.filter(d => d.tipo === "Leche" && d.fecha.includes(hoy));
     
     let totalOz = 0;
     tomasHoy.forEach(t => {
-        // Extraemos el número del detalle (ej: "2 oz" -> 2)
         const num = parseFloat(t.detalle);
         if (!isNaN(num)) totalOz += num;
     });
@@ -225,3 +190,21 @@ function actualizarDashboardLeche() {
         filler.style.height = porcentaje + "%";
     }
 }
+
+function descargarCSV() {
+    const datos = JSON.parse(localStorage.getItem('bebeData')) || [];
+    let csv = "Fecha,Tipo,Detalle\n" + datos.map(d => `"${d.fecha}","${d.tipo}","${d.detalle}"`).join("\n");
+    const blob = new Blob([csv], {type: 'text/csv'});
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url; a.download = "boyita_tracker.csv"; a.click();
+}
+
+function resetearApp() {
+    if(confirm("¿Borrar todo?")) { localStorage.clear(); location.reload(); }
+}
+
+// INICIALIZACIÓN
+actualizarVista();
+actualizarBotonesSueno();
+actualizarDashboardLeche();
