@@ -22,6 +22,7 @@ function guardarAlimento() {
     guardarDato({ tipo: "Leche", detalle: `${oz} oz ${nota ? '('+nota+')' : ''}` });
     document.getElementById('onzas').value = "";
     document.getElementById('notaLeche').value = "";
+    actualizarDashboardLeche();
 }
 
 function cambiarVistaPañal() {
@@ -147,7 +148,8 @@ function resetearApp() {
 actualizarVista();
 actualizarBotonesSueno();
 // Función para eliminar un registro
-function borrarRegistro(id) {
+function borrarRegistro(id) 
+actualizarDashboardLeche();{
     if(confirm("¿Seguro que quieres borrar este registro?")) {
         let datos = JSON.parse(localStorage.getItem('bebeData')) || [];
         datos = datos.filter(d => d.id !== id);
@@ -163,7 +165,8 @@ function habilitarEdicion(id) {
 }
 
 // Función para guardar el cambio editado
-function guardarEdicion(id) {
+function guardarEdicion(id) 
+actualizarDashboardLeche();{
     let datos = JSON.parse(localStorage.getItem('bebeData')) || [];
     const nuevoDetalle = document.getElementById(`input-${id}`).value;
     
