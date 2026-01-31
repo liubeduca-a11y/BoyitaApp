@@ -3,74 +3,96 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Baby Tracker</title>
+    <title>Baby Tracker Pro</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="app-container">
-        <header>
-            <h1>👶 Mi Bebé</h1>
-            <p id="fecha-actual"></p>
-        </header>
+        <nav class="tab-bar">
+            <button onclick="mostrarSeccion('registro')">📝 Registro</button>
+            <button onclick="mostrarSeccion('dashboard')">📊 Dashboard</button>
+            <button onclick="resetearApp()" class="btn-reset">⚠️ Reset</button>
+        </nav>
 
-        <div class="card">
-            <h3>🍼 Alimentación</h3>
-            <div class="input-group">
-                <input type="number" id="onzas" placeholder="¿Cuántas oz?">
-                <button onclick="guardarAlimento()" class="btn-main">Registrar</button>
-            </div>
-        </div>
+        <div id="seccion-registro">
+            <header>
+                <h1>👶 Registro Diario</h1>
+                <p id="fecha-actual"></p>
+            </header>
 
-        <div class="card">
-            <h3>🧷 Pañales</h3>
-            <select id="tipoPañal" onchange="mostrarOpcionesPañal()" class="full-select">
-                <option value="pipi">Pipi 💦</option>
-                <option value="popo">Popo 💩</option>
-            </select>
-            
-            <div id="opcionPipi">
-                <p>Nivel de llenado:</p>
-                <input type="range" id="nivelPipi" min="1" max="5" class="slider">
+            <div class="card">
+                <h3>🍼 Alimentación</h3>
+                <div class="btn-group">
+                    <button onclick="sumarOnzas(1)" class="btn-quick">+1 oz</button>
+                    <button onclick="sumarOnzas(1.5)" class="btn-quick">+1.5 oz</button>
+                    <button onclick="sumarOnzas(2)" class="btn-quick">+2 oz</button>
+                </div>
+                <input type="number" id="onzas" placeholder="Cantidad manual">
+                <button onclick="guardarAlimento()" class="btn-main">Guardar Toma</button>
             </div>
 
-            <div id="opcionPopo" style="display:none;">
-                <p>Textura:</p>
-                <select id="texturaPopo" class="full-select">
-                    <option value="Liquida">Líquida</option>
-                    <option value="Pastosa">Pastosa</option>
-                    <option value="Dura">Dura</option>
+            <div class="card">
+                <h3>🧷 Pañales</h3>
+                <select id="tipoPañal" onchange="mostrarOpcionesPañal()" class="full-select">
+                    <option value="pipi">Pipi 💦</option>
+                    <option value="popo">Popo 💩</option>
                 </select>
+                
+                <div id="opcionPipi">
+                    <p>Nivel de llenado:</p>
+                    <input type="range" id="nivelPipi" min="1" max="3" step="1" class="slider">
+                    <div class="range-labels"><span>Poco</span><span>Medio</span><span>Lleno</span></div>
+                </div>
+
+                <div id="opcionPopo" style="display:none;">
+                    <p>Textura:</p>
+                    <input type="range" id="texturaPopoRange" min="1" max="4" step="1" class="slider">
+                    <div class="range-labels"><span>Líq.</span><span>Past.</span><span>Dura</span><span>Sangre</span></div>
+                </div>
+                <button onclick="guardarPañal()" class="btn-main">Registrar Pañal</button>
             </div>
-            <button onclick="guardarPañal()" class="btn-main">Registrar Pañal</button>
-        </div>
 
-        <div class="card">
-            <h3>😴 Sueño</h3>
-            <label>Se durmió:</label>
-            <input type="datetime-local" id="suenoInicio" class="full-select">
-            <label>Despertó:</label>
-            <input type="datetime-local" id="suenoFin" class="full-select">
-            <select id="estadoDespertar" class="full-select">
-                <option value="Tranquilo">Tranquilo 😊</option>
-                <option value="Llorando">Llorando 😢</option>
-                <option value="Movimientos Raros">Movimientos Raros 😰</option>
-            </select>
-            <button onclick="guardarSueno()" class="btn-main">Registrar Sueño</button>
-        </div>
-
-        <div class="card">
-            <h3>💨 Digestión</h3>
-            <div class="btn-group">
-                <button onclick="guardarDigestion('Eructo')" class="btn-sub">Eructo</button>
-                <button onclick="guardarDigestion('Gas')" class="btn-sub">Gas</button>
+            <div class="card">
+                <h3>😴 Sueño</h3>
+                <div id="estado-sueno">
+                    <button id="btn-sueno-accion" onclick="controlarSueno()" class="btn-main" style="background-color: #4a5568;">Iniciar Sueño 🌙</button>
+                </div>
+                <div id="detalle-despertar" style="display:none; margin-top:10px;">
+                    <select id="estadoDespertar" class="full-select">
+                        <option value="Tranquila">Tranquila 😊</option>
+                        <option value="Llorando">Llorando 😢</option>
+                        <option value="Movimientos Raros">Movimientos Raros 😰</option>
+                        <option value="Silvidos">Silvidos 🌬️</option>
+                        <option value="Respiración Acelerada">Respiración Acelerada 💨</option>
+                    </select>
+                    <button onclick="finalizarSueno()" class="btn-main">Registrar Despertar</button>
+                </div>
             </div>
+
+            <hr>
+            <h3>Historial (Toca para borrar/editar)</h3>
+            <div id="listaRegistros"></div>
         </div>
 
-        <hr>
-        <h3>Registros Recientes</h3>
-        <div id="listaRegistros"></div>
-        
-        <button onclick="descargarDatos()" class="btn-download">📥 Descargar Reporte (CSV)</button>
+        <div id="seccion-dashboard" style="display:none;">
+            <h2>Resumen</h2>
+            <div class="period-selector">
+                <button onclick="cargarDashboard(24)">24h</button>
+                <button onclick="cargarDashboard(168)">7d</button>
+                <button onclick="cargarDashboard(720)">1m</button>
+            </div>
+
+            <div class="card bottle-card">
+                <h3>Total Leche</h3>
+                <div class="bottle">
+                    <div id="bottle-filler" class="water"></div>
+                </div>
+                <p id="total-onzas-text" style="font-weight:bold; margin-top:10px;">0 oz</p>
+            </div>
+
+            <div id="resumen-estadisticas"></div>
+            <button onclick="descargarDatos()" class="btn-download">📥 Descargar CSV</button>
+        </div>
     </div>
 
     <script src="script.js"></script>
