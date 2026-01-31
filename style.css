@@ -16,3 +16,12 @@ body { font-family: sans-serif; background: #f0f2f5; margin: 0; padding: 15px; }
 /* Biberón */
 .bottle { width: 60px; height: 120px; border: 3px solid #333; margin: 20px auto; position: relative; border-radius: 0 0 15px 15px; overflow: hidden; }
 .water { position: absolute; bottom: 0; width: 100%; background: #a3c9ff; transition: height 0.5s; }
+input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-sizing: border-box;
+    font-size: 14px;
+}
