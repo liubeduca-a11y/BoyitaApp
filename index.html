@@ -27,6 +27,7 @@
                     <button onclick="setOz(2)">2 oz</button>
                 </div>
                 <input type="number" id="onzas" placeholder="O cantidad manual...">
+                <input type="text" id="notaLeche" placeholder="Nota (ej: tomó con sueño)">
                 <button onclick="guardarAlimento()" class="btn-main">Guardar Toma</button>
             </div>
 
@@ -48,6 +49,7 @@
                     <input type="range" id="texturaPopo" min="1" max="4" step="1" class="slider">
                     <div class="range-labels"><span>Líq.</span><span>Past.</span><span>Dura</span><span>Sangre</span></div>
                 </div>
+                <input type="text" id="notaPañal" placeholder="Nota (ej: muy irritado)">
                 <button onclick="guardarPañal()" class="btn-main">Guardar Pañal</button>
             </div>
 
@@ -57,6 +59,8 @@
                     <button id="btn-sueno" onclick="toggleSueno()" class="btn-main" style="background-color: #4a5568;">Empezó a dormir 🌙</button>
                 </div>
                 <div id="detalle-despertar" style="display:none; margin-top:10px;">
+                <input type="text" id="notaSueno" placeholder="Nota (ej: ruidos en la calle)">
+                <button id="btn-sueno" onclick="toggleSueno()" ...
                     <p>¿Cómo despertó / Notas?</p>
                     <select id="estadoDespertar" class="full-select">
                         <option value="Tranquila">Tranquila 😊</option>
