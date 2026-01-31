@@ -45,20 +45,53 @@
             <button onclick="guardarPañal()" class="btn-main">Guardar Pañal</button>
         </div>
 
-        <div class="card">
-            <h3>Sueño</h3>
-            <button id="btn-sueno" onclick="toggleSueno()" class="btn-main" style="background-color: #4a5568;">Empezó a dormir 🌙</button>
-            <div id="detalle-despertar" style="display:none; margin-top:15px; border-top: 1px solid #eee; padding-top:10px;">
-                <p><strong>¿Cómo despertó?</strong></p>
-                <select id="estadoDespertar" class="full-select">
-                    <option value="Tranquila">Tranquila 😊</option>
-                    <option value="Llorando">Llorando 😢</option>
-                    <option value="Respiración Acelerada">Respiración Acelerada 💨</option>
-                </select>
-                <input type="text" id="notaSueno" placeholder="Notas del sueño...">
-            </div>
-        </div>
+function toggleSueno() {
+    const btn = document.getElementById('btn-sueno');
+    const detalleDiv = document.getElementById('detalle-despertar');
+    const inputNota = document.getElementById('notaSueno');
+    const selectEstado = document.getElementById('estadoDespertar');
 
+    if (!durmiendo) {
+        // --- EMPIEZA A DORMIR ---
+        localStorage.setItem('horaInicio', new Date().toISOString());
+        durmiendo = true;
+        
+        // Cambios visuales inmediatos
+        btn.innerText = "¡Despertó! ☀️";
+        btn.style.backgroundColor = "#f59e0b";
+        detalleDiv.style.display = "block";
+    } else {
+        // --- DESPIERTA (AQUÍ CAPTURAMOS TODO) ---
+        const horaInicioStr = localStorage.getItem('horaInicio');
+        if (horaInicioStr) {
+            const inicio = new Date(horaInicioStr);
+            const fin = new Date();
+            const duracion = Math.round((fin - inicio) / 1000 / 60);
+            
+            // CAPTURA CRÍTICA: Leemos los valores ANTES de cualquier otra cosa
+            const estado = selectEstado.value;
+            const nota = inputNota.value.trim();
+            
+            let det = `Durmió ${duracion} min (${estado})`;
+            if (nota !== "") {
+                det += ` - Nota: ${nota}`;
+            }
+
+            // GUARDAMOS
+            guardarDato({ tipo: "Sueño", detalle: det });
+        }
+
+        // RESET DE ESTADO
+        localStorage.removeItem('horaInicio');
+        durmiendo = false;
+        
+        // LIMPIEZA VISUAL
+        btn.innerText = "Empezó a dormir 🌙";
+        btn.style.backgroundColor = "#4a5568";
+        detalleDiv.style.display = "none";
+        inputNota.value = ""; // Limpiamos el texto
+    }
+}
         <h3>Historial</h3>
         <div id="listaRegistros"></div>
         

@@ -58,15 +58,35 @@ function guardarPañal() {
 // 4. SUEÑO
 function toggleSueno() {
     if(!durmiendo) {
+        // INICIO DEL SUEÑO
         localStorage.setItem('horaInicio', new Date().toISOString());
         durmiendo = true;
     } else {
+        // FIN DEL SUEÑO (DESPERTAR)
         const inicio = new Date(localStorage.getItem('horaInicio'));
-        const duracion = Math.round((new Date() - inicio) / 1000 / 60);
+        const fin = new Date();
+        const duracionMinutos = Math.round((fin - inicio) / 1000 / 60);
+        
+        // --- AQUÍ ESTÁ LA CORRECCIÓN ---
         const estado = document.getElementById('estadoDespertar').value;
-        guardarDato({ tipo: "Sueño", detalle: `Durmió ${duracion} min (${estado})` });
+        const notaAdicional = document.getElementById('notaSueno').value; // Capturamos la nota
+        
+        let detalleFinal = `Durmió ${duracionMinutos} min (${estado})`;
+        if(notaAdicional) {
+            detalleFinal += ` - Nota: ${notaAdicional}`; // La concatenamos al detalle
+        }
+        // -------------------------------
+
+        guardarDato({ 
+            tipo: "Sueño", 
+            detalle: detalleFinal 
+        });
+
         localStorage.removeItem('horaInicio');
         durmiendo = false;
+        
+        // Limpiamos el campo de notas para la próxima vez
+        document.getElementById('notaSueno').value = "";
     }
     actualizarBotonesSueno();
 }
