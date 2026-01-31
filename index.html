@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Baby Tracker</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <header>
+            <h1>👶 Mi Bebé</h1>
+            <p id="fecha-actual"></p>
+        </header>
+
+        <div class="card">
+            <h3>🍼 Alimentación</h3>
+            <div class="input-group">
+                <input type="number" id="onzas" placeholder="¿Cuántas oz?">
+                <button onclick="guardarAlimento()" class="btn-main">Registrar</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>🧷 Pañales</h3>
+            <select id="tipoPañal" onchange="mostrarOpcionesPañal()" class="full-select">
+                <option value="pipi">Pipi 💦</option>
+                <option value="popo">Popo 💩</option>
+            </select>
+            
+            <div id="opcionPipi">
+                <p>Nivel de llenado:</p>
+                <input type="range" id="nivelPipi" min="1" max="5" class="slider">
+            </div>
+
+            <div id="opcionPopo" style="display:none;">
+                <p>Textura:</p>
+                <select id="texturaPopo" class="full-select">
+                    <option value="Liquida">Líquida</option>
+                    <option value="Pastosa">Pastosa</option>
+                    <option value="Dura">Dura</option>
+                </select>
+            </div>
+            <button onclick="guardarPañal()" class="btn-main">Registrar Pañal</button>
+        </div>
+
+        <div class="card">
+            <h3>😴 Sueño</h3>
+            <label>Se durmió:</label>
+            <input type="datetime-local" id="suenoInicio" class="full-select">
+            <label>Despertó:</label>
+            <input type="datetime-local" id="suenoFin" class="full-select">
+            <select id="estadoDespertar" class="full-select">
+                <option value="Tranquilo">Tranquilo 😊</option>
+                <option value="Llorando">Llorando 😢</option>
+                <option value="Movimientos Raros">Movimientos Raros 😰</option>
+            </select>
+            <button onclick="guardarSueno()" class="btn-main">Registrar Sueño</button>
+        </div>
+
+        <div class="card">
+            <h3>💨 Digestión</h3>
+            <div class="btn-group">
+                <button onclick="guardarDigestion('Eructo')" class="btn-sub">Eructo</button>
+                <button onclick="guardarDigestion('Gas')" class="btn-sub">Gas</button>
+            </div>
+        </div>
+
+        <hr>
+        <h3>Registros Recientes</h3>
+        <div id="listaRegistros"></div>
+        
+        <button onclick="descargarDatos()" class="btn-download">📥 Descargar Reporte (CSV)</button>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
