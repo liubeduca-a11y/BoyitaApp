@@ -126,3 +126,34 @@ function resetearApp() {
 // INICIO AL CARGAR
 actualizarVista();
 actualizarBotonesSueno();
+// Función para eliminar un registro
+function borrarRegistro(id) {
+    if(confirm("¿Seguro que quieres borrar este registro?")) {
+        let datos = JSON.parse(localStorage.getItem('bebeData')) || [];
+        datos = datos.filter(d => d.id !== id);
+        localStorage.setItem('bebeData', JSON.stringify(datos));
+        actualizarVista();
+    }
+}
+
+// Función para mostrar el cuadrito de edición
+function habilitarEdicion(id) {
+    document.getElementById(`content-${id}`).style.display = 'none';
+    document.getElementById(`form-${id}`).style.display = 'block';
+}
+
+// Función para guardar el cambio editado
+function guardarEdicion(id) {
+    let datos = JSON.parse(localStorage.getItem('bebeData')) || [];
+    const nuevoDetalle = document.getElementById(`input-${id}`).value;
+    
+    datos = datos.map(d => {
+        if (d.id === id) {
+            return { ...d, detalle: nuevoDetalle };
+        }
+        return d;
+    });
+    
+    localStorage.setItem('bebeData', JSON.stringify(datos));
+    actualizarVista();
+}
