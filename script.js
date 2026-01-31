@@ -33,9 +33,25 @@ function cambiarVistaPañal() {
 function guardarPañal() {
     const tipo = document.getElementById('tipoPañal').value;
     const nota = document.getElementById('notaPañal').value;
-    let det = (tipo === 'pipi') ? "Pipi" : "Popo";
-    if(nota) det += ` - Nota: ${nota}`;
+    let det = "";
+
+    if (tipo === 'pipi') {
+        // Obtenemos el valor del slider de pipi (1, 2 o 3)
+        const nivel = document.getElementById('nivelPipi').value;
+        const etiquetas = ["Poco", "Medio", "Lleno"];
+        det = "Pipi: " + etiquetas[nivel - 1]; // nivel-1 porque los arrays empiezan en 0
+    } else {
+        // Obtenemos el valor del slider de popo (1 al 4)
+        const textura = document.getElementById('texturaPopo').value;
+        const etiquetas = ["Líquida", "Pastosa", "Dura", "Con Sangre"];
+        det = "Popo: " + etiquetas[textura - 1];
+    }
+
+    if (nota) det += ` - Nota: ${nota}`;
+
     guardarDato({ tipo: "Pañal", detalle: det });
+    
+    // Limpiar la nota después de guardar
     document.getElementById('notaPañal').value = "";
 }
 
