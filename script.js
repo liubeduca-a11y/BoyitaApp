@@ -89,10 +89,23 @@ function actualizarBotonesSueno() {
 function actualizarVista() {
     const lista = document.getElementById('listaRegistros');
     const datos = JSON.parse(localStorage.getItem('bebeData')) || [];
+    
     lista.innerHTML = datos.slice().reverse().map(d => `
-        <div class="registro-item">
-            <small>${d.fecha}</small><br>
-            <strong>${d.tipo}:</strong> ${d.detalle}
+        <div class="registro-item" id="reg-${d.id}">
+            <div id="content-${d.id}">
+                <small>${d.fecha}</small><br>
+                <strong>${d.tipo}:</strong> <span>${d.detalle}</span>
+                <div style="margin-top: 8px;">
+                    <button onclick="habilitarEdicion(${d.id})" style="color: #6366f1; border: none; background: none; font-size: 13px; cursor: pointer; padding: 0; margin-right: 15px;">✏️ Editar</button>
+                    <button onclick="borrarRegistro(${d.id})" style="color: #f56565; border: none; background: none; font-size: 13px; cursor: pointer; padding: 0;">🗑️ Borrar</button>
+                </div>
+            </div>
+            
+            <div id="form-${d.id}" style="display:none;">
+                <input type="text" id="input-${d.id}" value="${d.detalle}" style="width: 80%; padding: 5px; border: 1px solid #6366f1; border-radius: 5px;">
+                <button onclick="guardarEdicion(${d.id})" style="background: #10b981; color: white; border: none; border-radius: 5px; padding: 5px 10px;">✅</button>
+                <button onclick="actualizarVista()" style="background: #ccc; color: white; border: none; border-radius: 5px; padding: 5px 10px;">❌</button>
+            </div>
         </div>
     `).join('');
 }
@@ -113,3 +126,34 @@ function resetearApp() {
 // INICIO AL CARGAR
 actualizarVista();
 actualizarBotonesSueno();
+// Función para eliminar un registro
+function borrarRegistro(id) {
+    if(confirm("¿Seguro que quieres borrar este registro?")) {
+        let datos = JSON.parse(localStorage.getItem('bebeData')) || [];
+        datos = datos.filter(d => d.id !== id);
+        localStorage.setItem('bebeData', JSON.stringify(datos));
+        actualizarVista();
+    }
+}
+
+// Función para mostrar el cuadrito de edición
+function habilitarEdicion(id) {
+    document.getElementById(`content-${id}`).style.display = 'none';
+    document.getElementById(`form-${id}`).style.display = 'block';
+}
+
+// Función para guardar el cambio editado
+function guardarEdicion(id) {
+    let datos = JSON.parse(localStorage.getItem('bebeData')) || [];
+    const nuevoDetalle = document.getElementById(`input-${id}`).value;
+    
+    datos = datos.map(d => {
+        if (d.id === id) {
+            return { ...d, detalle: nuevoDetalle };
+        }
+        return d;
+    });
+    
+    localStorage.setItem('bebeData', JSON.stringify(datos));
+    actualizarVista();
+}

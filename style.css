@@ -10,3 +10,28 @@ header { text-align: center; margin-bottom: 20px; }
 .range-labels { display: flex; justify-content: space-between; font-size: 11px; color: #666; }
 .registro-item { background: #fff; padding: 12px; border-radius: 10px; margin-bottom: 8px; border-left: 4px solid #6366f1; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
 .btn-reset { width: 100%; background: none; color: #999; border: none; margin-top: 30px; font-size: 12px; text-decoration: underline; }
+/* Estilos para los controles de edición y borrado */
+.registro-item div button {
+    font-family: sans-serif;
+    transition: opacity 0.2s;
+}
+
+.registro-item div button:hover {
+    opacity: 0.7;
+}
+
+/* El input que aparece al editar */
+.registro-item input[type="text"] {
+    width: 70% !important;
+    display: inline-block !important;
+    margin: 5px 0 !important;
+    padding: 8px !important;
+    font-size: 14px !important;
+}
+
+/* Botones de acción rápida (Check y X) */
+#form-container button {
+    cursor: pointer;
+    margin-left: 5px;
+    font-weight: bold;
+}
