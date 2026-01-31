@@ -1,85 +1,41 @@
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f0f4f8;
-    margin: 0;
-    padding: 20px;
-    display: flex;
-    justify-content: center;
-}
+/* ... (manten lo anterior y añade/modifica esto) ... */
+.tab-bar { display: flex; gap: 5px; margin-bottom: 20px; }
+.tab-bar button { flex:1; padding: 10px; border-radius: 8px; border: none; cursor: pointer; }
+.btn-reset { background-color: #feb2b2; color: #9b2c2c; }
 
-.app-container {
-    max-width: 500px;
+.btn-quick { background: #edf2f7; border: 1px solid #cbd5e0; padding: 10px; border-radius: 8px; flex: 1; margin: 2px; }
+
+.range-labels { display: flex; justify-content: space-between; font-size: 12px; color: #718096; padding: 0 5px; }
+
+/* El Biberón Animado */
+.bottle-card { text-align: center; }
+.bottle {
+    width: 80px;
+    height: 150px;
+    border: 3px solid #4a5568;
+    border-radius: 5px 5px 20px 20px;
+    margin: 0 auto;
+    position: relative;
+    overflow: hidden;
+    background: #f7fafc;
+}
+.water {
+    position: absolute;
+    bottom: 0;
     width: 100%;
+    background: #a3b1ff;
+    transition: height 1s ease-in-out;
 }
-
-header {
-    text-align: center;
-    color: #5a67d8;
-    margin-bottom: 20px;
+/* Animación de oleaje simple */
+.water::after {
+    content: "";
+    position: absolute;
+    top: -5px; width: 200%; height: 10px;
+    background: rgba(255,255,255,0.3);
+    border-radius: 40%;
+    animation: wave 3s infinite linear;
 }
-
-.card {
-    background: white;
-    padding: 15px;
-    border-radius: 15px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    margin-bottom: 20px;
+@keyframes wave { 
+    from { transform: translateX(0); } 
+    to { transform: translateX(-50%); } 
 }
-
-h3 { margin-top: 0; color: #4a5568; }
-
-.full-select, input[type="number"], input[type="datetime-local"] {
-    width: 100%;
-    padding: 12px;
-    margin: 10px 0;
-    border: 1px solid #cbd5e0;
-    border-radius: 8px;
-    box-sizing: border-box;
-    font-size: 16px;
-}
-
-.btn-main {
-    width: 100%;
-    background-color: #667eea;
-    color: white;
-    padding: 15px;
-    border: none;
-    border-radius: 8px;
-    font-size: 16px;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-.btn-sub {
-    flex: 1;
-    background-color: #a3b1ff;
-    color: white;
-    padding: 12px;
-    border: none;
-    border-radius: 8px;
-    margin: 5px;
-    font-weight: bold;
-}
-
-.btn-group { display: flex; }
-
-.btn-download {
-    width: 100%;
-    background-color: #48bb78;
-    color: white;
-    padding: 10px;
-    border: none;
-    border-radius: 8px;
-    margin-top: 20px;
-}
-
-.registro-item {
-    background: #fff;
-    padding: 10px;
-    border-left: 5px solid #667eea;
-    margin-bottom: 5px;
-    border-radius: 4px;
-    font-size: 14px;
-}
-
-.slider { width: 100%; margin: 15px 0; }
