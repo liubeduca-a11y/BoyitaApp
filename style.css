@@ -35,3 +35,31 @@ header { text-align: center; margin-bottom: 20px; }
     margin-left: 5px;
     font-weight: bold;
 }
+.tab-bar {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    position: sticky;
+    top: 0;
+    background: #f0f2f5;
+    padding: 10px 0;
+    z-index: 1000;
+}
+
+.tab-bar button {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    border-radius: 12px;
+    background: white;
+    font-weight: bold;
+    color: #718096;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    cursor: pointer;
+}
+
+.tab-bar button.active-tab {
+    background: #6366f1;
+    color: white;
+    box-shadow: 0 4px 10px rgba(99, 102, 241, 0.3);
+}
