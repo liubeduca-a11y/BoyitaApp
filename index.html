@@ -3,46 +3,68 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Boyita Tracker</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>Boyita Tracker - Estable</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="app-container">
-        <nav class="tab-bar">
-            <button onclick="mostrarSeccion('registro')">📝 Registro</button>
-            <button onclick="mostrarSeccion('dashboard')">📊 Resumen</button>
-        </nav>
+        <header>
+            <h1>🍼 Boyita Tracker</h1>
+            <p id="fecha-actual"></p>
+        </header>
 
-        <div id="seccion-registro">
-            <header>
-                <h1>🍼 Boyita Tracker</h1>
-                <p id="fecha-actual"></p>
-            </header>
-
-            <div class="card">
-                <h3>Leche</h3>
-                <div class="btn-group">
-                    <button onclick="setOz(1)">1 oz</button>
-                    <button onclick="setOz(1.5)">1.5 oz</button>
-                    <button onclick="setOz(2)">2 oz</button>
-                </div>
-                <input type="number" id="onzas" step="0.5" inputmode="decimal" placeholder="O cantidad manual...">
-                <input type="text" id="notaLeche" placeholder="Nota (ej: tomó con sueño)">
-                <button onclick="guardarAlimento()" class="btn-main">Guardar Toma</button>
+        <div class="card">
+            <h3>Leche</h3>
+            <div class="btn-group">
+                <button onclick="setOz(1)">1 oz</button>
+                <button onclick="setOz(1.5)">1.5 oz</button>
+                <button onclick="setOz(2)">2 oz</button>
             </div>
+            <input type="number" id="onzas" inputmode="decimal" placeholder="Onzas manual...">
+            <input type="text" id="notaLeche" placeholder="Nota de la toma...">
+            <button onclick="guardarAlimento()" class="btn-main">Guardar Toma</button>
+        </div>
 
-            <div class="card">
-                <h3>Pañales</h3>
-                <select id="tipoPañal" onchange="cambiarVistaPañal()" class="full-select">
-                    <option value="pipi">Pipi 💦</option>
-                    <option value="popo">Popo 💩</option>
+        <div class="card">
+            <h3>Pañales</h3>
+            <select id="tipoPañal" onchange="cambiarVistaPañal()" class="full-select">
+                <option value="pipi">Pipi 💦</option>
+                <option value="popo">Popo 💩</option>
+            </select>
+            <div id="opcionPipi">
+                <p>Nivel:</p>
+                <input type="range" id="nivelPipi" min="1" max="3" step="1" class="slider">
+                <div class="range-labels"><span>Poco</span><span>Medio</span><span>Lleno</span></div>
+            </div>
+            <div id="opcionPopo" style="display:none;">
+                <p>Textura:</p>
+                <input type="range" id="texturaPopo" min="1" max="4" step="1" class="slider">
+                <div class="range-labels"><span>Líq.</span><span>Past.</span><span>Dura</span><span>Sangre</span></div>
+            </div>
+            <input type="text" id="notaPañal" placeholder="Nota del pañal...">
+            <button onclick="guardarPañal()" class="btn-main">Guardar Pañal</button>
+        </div>
+
+        <div class="card">
+            <h3>Sueño</h3>
+            <button id="btn-sueno" onclick="toggleSueno()" class="btn-main" style="background-color: #4a5568;">Empezó a dormir 🌙</button>
+            <div id="detalle-despertar" style="display:none; margin-top:15px; border-top: 1px solid #eee; padding-top:10px;">
+                <p><strong>¿Cómo despertó?</strong></p>
+                <select id="estadoDespertar" class="full-select">
+                    <option value="Tranquila">Tranquila 😊</option>
+                    <option value="Llorando">Llorando 😢</option>
+                    <option value="Respiración Acelerada">Respiración Acelerada 💨</option>
                 </select>
-                
-                <div id="opcionPipi">
-                    <p>Nivel de llenado:</p>
-                    <input type="range" id="nivelPipi" min="1" max="3" step="1" class="slider">
-                    <div class="range-labels"><span>Poco</span><span>Medio</span><span>Lleno</span></div>
-                </div>
+                <input type="text" id="notaSueno" placeholder="Notas del sueño...">
+            </div>
+        </div>
 
-                <div id="opcionPopo" style="display
+        <h3>Historial</h3>
+        <div id="listaRegistros"></div>
+        
+        <button onclick="descargarCSV()" class="btn-main" style="background-color: #10b981; margin-top: 20px;">📥 Descargar CSV</button>
+        <button onclick="resetearApp()" class="btn-reset">Borrar todo y empezar de cero</button>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
