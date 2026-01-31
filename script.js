@@ -13,9 +13,17 @@ function setOz(n) { document.getElementById('onzas').value = n; }
 
 function guardarAlimento() {
     const oz = document.getElementById('onzas').value;
+    const nota = document.getElementById('notaLeche').value; // Nueva línea
     if(!oz) return alert("Pon las onzas");
-    guardarDato({ tipo: "Leche", detalle: oz + " oz", valor: parseFloat(oz) });
+    
+    guardarDato({ 
+        tipo: "Leche", 
+        detalle: `${oz} oz ${nota ? '('+nota+')' : ''}`, 
+        valor: parseFloat(oz) 
+    });
+    
     document.getElementById('onzas').value = "";
+    document.getElementById('notaLeche').value = ""; // Limpiar nota
 }
 
 // 4. Pañales
@@ -27,7 +35,9 @@ function cambiarVistaPañal() {
 
 function guardarPañal() {
     const tipo = document.getElementById('tipoPañal').value;
+    const nota = document.getElementById('notaPañal').value; // Nueva línea
     let det = "";
+    
     if(tipo === 'pipi') {
         const niveles = ["Poco", "Medio", "Lleno"];
         det = "Pipi: " + niveles[document.getElementById('nivelPipi').value - 1];
@@ -35,12 +45,15 @@ function guardarPañal() {
         const texturas = ["Líquida", "Pastosa", "Dura", "Con Sangre"];
         det = "Popo: " + texturas[document.getElementById('texturaPopo').value - 1];
     }
+    
+    if(nota) det += ` - Nota: ${nota}`;
+    
     guardarDato({ tipo: "Pañal", detalle: det });
+    document.getElementById('notaPañal').value = ""; // Limpiar nota
 }
 
 // 5. Sueño (Modo Cronómetro)
-let durmiendo = localStorage.getItem('horaInicio') !== null;
-
+// En la función toggleSueno(), busca la parte donde se guarda el dato y cámbiala:
 function toggleSueno() {
     if(!durmiendo) {
         localStorage.setItem('horaInicio', new Date().toISOString());
@@ -50,16 +63,20 @@ function toggleSueno() {
         const inicio = new Date(localStorage.getItem('horaInicio'));
         const fin = new Date();
         const estado = document.getElementById('estadoDespertar').value;
-        const duracion = Math.round((fin - inicio) / 1000 / 60); // minutos
+        const nota = document.getElementById('notaSueno').value; // Nueva línea
+        const duracion = Math.round((fin - inicio) / 1000 / 60);
         
-        guardarDato({ tipo: "Sueño", detalle: `Durmió ${duracion} min (${estado})` });
+        let det = `Durmió ${duracion} min (${estado})`;
+        if(nota) det += ` - Nota: ${nota}`;
+        
+        guardarDato({ tipo: "Sueño", detalle: det });
         
         localStorage.removeItem('horaInicio');
         durmiendo = false;
+        document.getElementById('notaSueno').value = ""; // Limpiar nota
         actualizarBotonesSueno();
     }
 }
-
 function actualizarBotonesSueno() {
     const btn = document.getElementById('btn-sueno');
     const detalle = document.getElementById('detalle-despertar');
