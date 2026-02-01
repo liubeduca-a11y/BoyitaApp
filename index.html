@@ -7,10 +7,10 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="app-container">
-        <nav class="tab-bar">
+    <div class="app-container"> <nav class="tab-bar">
             <button onclick="cambiarPestaña('registro')" id="tab-registro" class="active-tab">📝 Registro</button>
             <button onclick="cambiarPestaña('dashboards')" id="tab-dashboards">📊 Resumen</button>
+            <button onclick="cambiarPestaña('historial')" id="tab-historial">📜 Historial</button>
         </nav>
 
         <div id="pestaña-registro">
@@ -64,16 +64,10 @@
                     <input type="text" id="notaSueno" placeholder="Notas del sueño...">
                 </div>
             </div>
-
-            <h3>Historial Hoy</h3>
-            <div id="listaRegistros"></div>
-        </div>
-
-        <div id="pestaña-dashboards" style="display: none;">
+        </div> <div id="pestaña-dashboards" style="display: none;">
             <header>
                 <h1>📊 Resumen de Boyita</h1>
             </header>
-
             <div class="card" style="text-align: center;">
                 <h3>Consumo de Hoy</h3>
                 <div class="bottle">
@@ -84,12 +78,17 @@
             </div>
         </div>
 
+        <div id="pestaña-historial" style="display: none;">
+            <header>
+                <h1>📜 Historial de Boyita</h1>
+            </header>
+            <div id="listaRegistros"></div>
+        </div>
+
         <div style="margin-top: 30px; padding-bottom: 50px;">
             <button onclick="descargarCSV()" class="btn-main" style="background-color: #10b981;">📥 Descargar CSV</button>
             <button onclick="resetearApp()" class="btn-reset">Borrar todo y empezar de cero</button>
         </div>
-    </div>
-
-    <script src="script.js"></script>
+    </div> <script src="script.js"></script>
 </body>
 </html>
