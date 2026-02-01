@@ -151,25 +151,39 @@ function guardarEdicion(id) {
 
 // 6. DASHBOARDS Y NAVEGACIÓN
 function cambiarPestaña(pestaña) {
+    // 1. Lista de todas nuestras secciones
     const reg = document.getElementById('pestaña-registro');
     const dash = document.getElementById('pestaña-dashboards');
+    const hist = document.getElementById('pestaña-historial');
+
+    // 2. Lista de todos nuestros botones
     const btnReg = document.getElementById('tab-registro');
     const btnDash = document.getElementById('tab-dashboards');
+    const btnHist = document.getElementById('tab-historial');
 
+    // 3. OCULTAR TODO PRIMERO (Reseteo)
+    reg.style.display = 'none';
+    dash.style.display = 'none';
+    hist.style.display = 'none';
+
+    btnReg.classList.remove('active-tab');
+    btnDash.classList.remove('active-tab');
+    btnHist.classList.remove('active-tab');
+
+    // 4. MOSTRAR SOLO LA SELECCIONADA
     if (pestaña === 'registro') {
         reg.style.display = 'block';
-        dash.style.display = 'none';
         btnReg.classList.add('active-tab');
-        btnDash.classList.remove('active-tab');
-    } else {
-        reg.style.display = 'none';
+    } else if (pestaña === 'dashboards') {
         dash.style.display = 'block';
-        btnReg.classList.remove('active-tab');
         btnDash.classList.add('active-tab');
-        actualizarDashboardLeche();
+        actualizarDashboardLeche(); // Recalcular el biberón al entrar
+    } else if (pestaña === 'historial') {
+        hist.style.display = 'block';
+        btnHist.classList.add('active-tab');
+        actualizarVista(); // Refrescar la lista de registros
     }
 }
-
 function actualizarDashboardLeche() {
     const datos = JSON.parse(localStorage.getItem('bebeData')) || [];
     const hoy = new Date().toLocaleDateString();
@@ -208,3 +222,15 @@ function resetearApp() {
 actualizarVista();
 actualizarBotonesSueno();
 actualizarDashboardLeche();
+
+function guardarDato(obj) {
+    obj.id = Date.now();
+    obj.fecha = new Date().toLocaleString();
+    let datos = JSON.parse(localStorage.getItem('bebeData')) || [];
+    datos.push(obj);
+    localStorage.setItem('bebeData', JSON.stringify(datos));
+    
+    // Esto actualiza las pestañas "fantasma" aunque no las estés viendo
+    actualizarVista(); 
+    actualizarDashboardLeche();
+}
