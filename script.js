@@ -151,17 +151,23 @@ function guardarEdicion(id) {
 
 // 6. DASHBOARDS Y NAVEGACIÓN
 function cambiarPestaña(pestaña) {
-    // 1. Lista de todas nuestras secciones
+    console.log("Cambiando a:", pestaña); // Esto nos dirá en la consola si el clic funciona
+
     const reg = document.getElementById('pestaña-registro');
     const dash = document.getElementById('pestaña-dashboards');
     const hist = document.getElementById('pestaña-historial');
 
-    // 2. Lista de todos nuestros botones
     const btnReg = document.getElementById('tab-registro');
     const btnDash = document.getElementById('tab-dashboards');
     const btnHist = document.getElementById('tab-historial');
 
-    // 3. OCULTAR TODO PRIMERO (Reseteo)
+    // Verificación de seguridad: Si alguno no existe, no sigas para no romper la app
+    if (!reg || !dash || !hist) {
+        console.error("Error: No se encontró una de las pestañas en el HTML");
+        return;
+    }
+
+    // Ocultar todo
     reg.style.display = 'none';
     dash.style.display = 'none';
     hist.style.display = 'none';
@@ -170,18 +176,18 @@ function cambiarPestaña(pestaña) {
     btnDash.classList.remove('active-tab');
     btnHist.classList.remove('active-tab');
 
-    // 4. MOSTRAR SOLO LA SELECCIONADA
+    // Mostrar la seleccionada
     if (pestaña === 'registro') {
         reg.style.display = 'block';
         btnReg.classList.add('active-tab');
     } else if (pestaña === 'dashboards') {
         dash.style.display = 'block';
         btnDash.classList.add('active-tab');
-        actualizarDashboardLeche(); // Recalcular el biberón al entrar
+        actualizarDashboardLeche();
     } else if (pestaña === 'historial') {
         hist.style.display = 'block';
         btnHist.classList.add('active-tab');
-        actualizarVista(); // Refrescar la lista de registros
+        actualizarVista(); // Esto es lo que "dibuja" la lista
     }
 }
 function actualizarDashboardLeche() {
