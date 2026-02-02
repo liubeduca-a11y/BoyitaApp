@@ -146,54 +146,59 @@ body {
     background: white; padding: 12px; border-radius: 12px;
     margin-bottom: 10px; border-left: 5px solid var(--primary-color);
 
-    /* MEJORA DE SLIDERS (PAÑALES) */
-
-/* El contenedor del slider para darle espacio */
-#opcionPipi, #opcionPopo {
-    padding: 10px 5px;
-}
-
-/* El slider en sí */
+/* ELIMINAR EL ESTILO POR DEFECTO Y FORZAR TAMAÑO */
 .slider {
-    -webkit-appearance: none;
+    -webkit-appearance: none; /* Obligatorio para Chrome/Safari */
+    appearance: none;
     width: 100%;
-    height: 15px; /* Más grueso para tocar fácil */
-    border-radius: 10px;
+    height: 25px !important; /* Aumentamos el grosor de la barra */
     background: #e2e8f0;
+    border-radius: 15px;
     outline: none;
-    margin: 20px 0 10px 0;
+    margin: 30px 0 15px 0; /* Más espacio para no tocar botones por error */
 }
 
-/* El "puntito" o control del slider para Chrome/Safari/Edge */
+/* EL BOTÓN (CÍRCULO) PARA MOVER - CHROME, SAFARI, EDGE */
 .slider::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;
-    width: 25px;
-    height: 25px;
-    border-radius: 50%;
+    width: 45px !important; /* ¡Casi el doble de grande! */
+    height: 45px !important;
     background: var(--primary-color);
+    border: 4px solid white;
+    border-radius: 50%;
     cursor: pointer;
-    border: 3px solid white;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    margin-top: 0px; /* Ajuste para centrarlo si es necesario */
 }
 
-/* Las etiquetas debajo del slider */
+/* EL BOTÓN PARA FIREFOX */
+.slider::-moz-range-thumb {
+    width: 45px !important;
+    height: 45px !important;
+    background: var(--primary-color);
+    border: 4px solid white;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+/* AJUSTE DE LAS ETIQUETAS (Poco, Medio, Lleno) */
 .range-labels {
     display: flex;
     justify-content: space-between;
-    padding: 0 5px;
-    margin-bottom: 15px;
+    padding: 0 10px;
+    margin-top: 5px;
 }
 
 .range-labels span {
-    font-size: 13px;
-    font-weight: bold;
+    font-size: 16px; /* Letras un poco más grandes */
+    font-weight: 800;
     color: var(--accent-color);
-}
-    box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+    flex: 1;
+    text-align: center;
 }
 
-.btn-reset {
-    background: none; border: none; color: #e53e3e; 
-    text-decoration: underline; cursor: pointer; margin-top: 20px;
-}
+/* Alineamos la primera etiqueta a la izquierda y la última a la derecha */
+.range-labels span:first-child { text-align: left; }
+.range-labels span:last-child { text-align: right; }
