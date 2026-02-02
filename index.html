@@ -8,6 +8,8 @@
 </head>
 <body>
 
+    <button onclick="toggleMenu()" class="open-menu-btn">☰ Temas</button>
+
     <div id="sidebar" class="sidebar">
         <a href="javascript:void(0)" class="closebtn" onclick="toggleMenu()">×</a>
         <h2>Paleta de Colores</h2>
@@ -19,10 +21,7 @@
         </div>
     </div>
 
-    <button onclick="toggleMenu()" class="open-menu-btn">☰ Temas</button>
-
-    <div class="app-container"> 
-        
+    <div class="app-container">
         <nav class="tab-bar">
             <button onclick="cambiarPestaña('registro')" id="tab-registro" class="active-tab">📝 Registro</button>
             <button onclick="cambiarPestaña('dashboards')" id="tab-dashboards">📊 Resumen</button>
@@ -37,11 +36,11 @@
 
             <div class="card">
                 <h3>Leche (Biberón)</h3>
-                <button id="btn-leche" onclick="toggleLeche()" class="btn-main" style="background-color: #6366f1;">Iniciar Toma 🍼</button>
+                <button id="btn-leche" onclick="toggleLeche()" class="btn-main">Iniciar Toma 🍼</button>
                 <div id="detalle-toma" style="display:none; margin-top:15px; border-top: 1px solid #eee; padding-top:10px;">
                     <p><strong>Finalizar toma:</strong></p>
                     <input type="number" id="oz-final" inputmode="decimal" placeholder="¿Cuántas oz quedaron?">
-                    <input type="text" id="notaLeche" placeholder="Nota de la toma (opcional)...">
+                    <input type="text" id="notaLeche" placeholder="Nota opcional...">
                 </div>
             </div>
 
@@ -69,7 +68,6 @@
                 <h3>Sueño</h3>
                 <button id="btn-sueno" onclick="toggleSueno()" class="btn-main" style="background-color: #4a5568;">Empezó a dormir 🌙</button>
                 <div id="detalle-despertar" style="display:none; margin-top:15px; border-top: 1px solid #eee; padding-top:10px;">
-                    <p><strong>¿Cómo despertó?</strong></p>
                     <select id="estadoDespertar" class="full-select">
                         <option value="Tranquila">Tranquila 😊</option>
                         <option value="Llorando">Llorando 😢</option>
@@ -78,34 +76,31 @@
                     <input type="text" id="notaSueno" placeholder="Notas del sueño...">
                 </div>
             </div>
-        </div> 
+        </div>
 
         <div id="pestaña-dashboards" style="display: none;">
-            <header>
-                <h1>📊 Resumen de Boyita</h1>
-            </header>
+            <header><h1>📊 Resumen</h1></header>
             <div class="card" style="text-align: center;">
                 <h3>Consumo de Hoy</h3>
                 <div class="bottle">
                     <div id="bottle-filler" class="water"></div>
                 </div>
-                <p id="total-onzas-texto" style="font-size: 28px; font-weight: bold; color: #6366f1;">0 oz</p>
+                <p id="total-onzas-texto" style="font-size: 28px; font-weight: bold; color: var(--primary-color);">0 oz</p>
                 <p style="font-size: 12px; color: #666;">Meta diaria sugerida: 30 oz</p>
             </div>
         </div>
 
         <div id="pestaña-historial" style="display: none;">
-            <header>
-                <h1>📜 Historial de Boyita</h1>
-            </header>
+            <header><h1>📜 Historial</h1></header>
             <div id="listaRegistros"></div>
         </div>
 
-        <div style="margin-top: 30px; padding-bottom: 50px;">
+        <div style="margin-top: 30px; padding-bottom: 50px; text-align: center;">
             <button onclick="descargarCSV()" class="btn-main" style="background-color: #10b981;">📥 Descargar CSV</button>
             <button onclick="resetearApp()" class="btn-reset">Borrar todo y empezar de cero</button>
         </div>
+    </div>
 
-    </div> <script src="script.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
