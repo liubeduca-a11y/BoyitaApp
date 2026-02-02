@@ -15,15 +15,64 @@ function guardarDato(obj) {
 }
 
 // 3. LECHE Y PAÑALES
-function setOz(n) { document.getElementById('onzas').value = n; }
+function toggleLeche() {
+    const btn = document.getElementById('btn-leche');
+    const detalleDiv = document.getElementById('detalle-toma');
+    const inputFinal = document.getElementById('oz-final');
+    const inputNota = document.getElementById('notaLeche');
 
-function guardarAlimento() {
-    const oz = document.getElementById('onzas').value;
-    const nota = document.getElementById('notaLeche').value;
-    if(!oz) return alert("Escribe las onzas");
-    guardarDato({ tipo: "Leche", detalle: `${oz} oz ${nota ? '('+nota+')' : ''}` });
-    document.getElementById('onzas').value = "";
-    document.getElementById('notaLeche').value = "";
+    if (!tomandoLeche) {
+        // --- INICIO DE LA TOMA ---
+        const ozIniciales = prompt("¿Con cuántas onzas inicia el biberón?", "4");
+        
+        if (ozIniciales === null || ozIniciales === "") return; // Cancelado
+
+        localStorage.setItem('inicioLeche', new Date().toISOString());
+        localStorage.setItem('ozIniciales', ozIniciales);
+        
+        tomandoLeche = true;
+        btn.innerText = "Finalizar Toma 🏁";
+        btn.style.backgroundColor = "#10b981";
+        detalleDiv.style.display = "block";
+    } else {
+        // --- FIN DE LA TOMA ---
+        const inicio = new Date(localStorage.getItem('inicioLeche'));
+        const ozIniciales = parseFloat(localStorage.getItem('ozIniciales'));
+        const ozRestantes = parseFloat(inputFinal.value);
+        const fin = new Date();
+
+        if (isNaN(ozRestantes)) {
+            alert("Por favor escribe cuántas onzas quedaron.");
+            return;
+        }
+
+        // Cálculos
+        const duracionMinutos = Math.round((fin - inicio) / 1000 / 60);
+        const ozConsumidas = (ozIniciales - ozRestantes).toFixed(1);
+        const nota = inputNota.value.trim();
+
+        if (ozConsumidas < 0) {
+            alert("¡Error! Las onzas restantes no pueden ser mayores a las iniciales.");
+            return;
+        }
+
+        // Guardar
+        let detalleFinal = `${ozConsumidas} oz (Dura: ${duracionMinutos} min)`;
+        if (nota) detalleFinal += ` - Nota: ${nota}`;
+
+        guardarDato({ tipo: "Leche", detalle: detalleFinal });
+
+        // Resetear
+        localStorage.removeItem('inicioLeche');
+        localStorage.removeItem('ozIniciales');
+        tomandoLeche = false;
+        
+        btn.innerText = "Iniciar Toma 🍼";
+        btn.style.backgroundColor = "#6366f1";
+        detalleDiv.style.display = "none";
+        inputFinal.value = "";
+        inputNota.value = "";
+    }
 }
 
 function cambiarVistaPañal() {
@@ -120,6 +169,20 @@ function actualizarVista() {
         </div>
     `).join('');
 }
+
+// Añade esto donde tienes tus otras llamadas iniciales (como actualizarVista)
+function actualizarBotonesLeche() {
+    const btn = document.getElementById('btn-leche');
+    const detalle = document.getElementById('detalle-toma');
+    if(tomandoLeche) {
+        btn.innerText = "Finalizar Toma 🏁";
+        btn.style.backgroundColor = "#10b981";
+        detalle.style.display = "block";
+    }
+}
+
+// Y llámala al final del archivo
+actualizarBotonesLeche();
 
 function borrarRegistro(id) {
     if(confirm("¿Seguro que quieres borrar este registro?")) {
