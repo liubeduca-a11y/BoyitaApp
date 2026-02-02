@@ -18,18 +18,16 @@
                 <h1>🍼 Boyita Tracker</h1>
                 <p id="fecha-actual"></p>
             </header>
-
             <div class="card">
-                <h3>Leche</h3>
-                <div class="btn-group">
-                    <button onclick="setOz(1)">1 oz</button>
-                    <button onclick="setOz(1.5)">1.5 oz</button>
-                    <button onclick="setOz(2)">2 oz</button>
-                </div>
-                <input type="number" id="onzas" inputmode="decimal" placeholder="Onzas manual...">
-                <input type="text" id="notaLeche" placeholder="Nota de la toma...">
-                <button onclick="guardarAlimento()" class="btn-main">Guardar Toma</button>
-            </div>
+    <h3>Leche (Biberón)</h3>
+    <button id="btn-leche" onclick="toggleLeche()" class="btn-main" style="background-color: #6366f1;">Iniciar Toma 🍼</button>
+    
+    <div id="detalle-toma" style="display:none; margin-top:15px; border-top: 1px solid #eee; padding-top:10px;">
+        <p><strong>Finalizar toma:</strong></p>
+        <input type="number" id="oz-final" inputmode="decimal" placeholder="¿Cuántas oz quedaron?">
+        <input type="text" id="notaLeche" placeholder="Nota de la toma (opcional)...">
+    </div>
+</div>
 
             <div class="card">
                 <h3>Pañales</h3>
