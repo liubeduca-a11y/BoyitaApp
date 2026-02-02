@@ -81,13 +81,16 @@
         <div id="pestaña-dashboards" style="display: none;">
     <header><h1>📊 Dashboard</h1></header>
 
-    <div class="filter-bar">
-        <button onclick="filtrarDash(24)">24h</button>
-        <button onclick="filtrarDash('semana')">1 Sem</button>
-        <button onclick="filtrarDash('mes')">1 Mes</button>
-        <input type="date" id="fecha-filtro" onchange="filtrarPorFecha(this.value)">
+            <div class="filter-bar">
+    <button onclick="filtrarDash(24)">24h</button>
+    <button onclick="filtrarDash('semana')">1 Sem</button>
+    <button onclick="filtrarDash('mes')">1 Mes</button>
+    <div class="range-inputs">
+        <input type="date" id="fecha-inicio" onchange="filtrarPorRango()">
+        <input type="date" id="fecha-fin" onchange="filtrarPorRango()">
     </div>
-
+</div>
+            
     <div class="card dashboard-card">
         <h3>Consumo de Leche</h3>
         
