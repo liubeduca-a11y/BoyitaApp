@@ -1,5 +1,9 @@
 body { font-family: sans-serif; background: #f0f2f5; margin: 0; padding: 15px; }
-.app-container { max-width: 400px; margin: auto; }
+.app-container { 
+    max-width: 400px; 
+    margin: auto; 
+    padding-top: 50px; /* Añadimos espacio para que el botón de temas no tape el título */
+}
 header { text-align: center; margin-bottom: 20px; }
 .card { background: white; padding: 15px; border-radius: 15px; margin-bottom: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
 .btn-group { display: flex; gap: 5px; margin-bottom: 10px; }
@@ -41,11 +45,10 @@ header { text-align: center; margin-bottom: 20px; }
     margin-bottom: 20px;
     position: sticky;
     top: 0;
-    background: #f0f2f5;
+    background: var(--bg-color); /* Usamos la variable para que cambie el color también aquí */
     padding: 10px 0;
-    z-index: 1000;
+    z-index: 900; /* Menor que el botón para que no lo tape */
 }
-
 .tab-bar button {
     flex: 1;
     padding: 12px;
@@ -99,20 +102,20 @@ body { background-color: var(--bg-color); }
     font-size: 36px; color: white; text-decoration: none;
 }
 
-/* Botón flotante más visible */
 .open-menu-btn {
     position: fixed; 
     top: 10px; 
     left: 10px; 
-    z-index: 9999; /* Super alto para que siempre esté arriba */
-    background: var(--primary-color, #4a5568); 
+    z-index: 2000; /* Lo subimos aún más por si acaso */
+    background: var(--primary-color); 
     color: white; 
     border: 2px solid white;
-    padding: 10px 15px; 
-    border-radius: 50px; /* Redondeado tipo cápsula */
-    font-size: 14px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+    padding: 8px 12px; 
+    border-radius: 20px;
+    font-size: 12px; /* Un poco más pequeño para celular */
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
     cursor: pointer;
+    font-weight: bold;
 }
 
 /* Círculos de colores */
@@ -122,3 +125,24 @@ body { background-color: var(--bg-color); }
 .rosa { background: #ed64a6; }
 .bosque { background: #48bb78; }
 .noche { background: #2d3748; }
+
+/* Estilo del Biberón en el Dashboard */
+.bottle {
+    width: 80px;
+    height: 150px;
+    border: 4px solid #e2e8f0;
+    border-radius: 10px 10px 20px 20px;
+    margin: 20px auto;
+    position: relative;
+    background: #fff;
+    overflow: hidden;
+}
+
+.water {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 0%; /* Esto lo controla el JS */
+    background: var(--primary-color);
+    transition: height 0.5s ease;
+}
