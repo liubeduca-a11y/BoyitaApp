@@ -13,11 +13,16 @@ body {
     color: var(--text-color);
     margin: 0; padding: 15px; 
     transition: background 0.3s ease, color 0.3s ease;
-    /* Evita el scroll horizontal molesto */
     overflow-x: hidden;
 }
 
-.app-container { max-width: 500px; margin: auto; padding-top: 60px; }
+/* AQUÍ ESTABA EL ERROR: Aumentamos a 800px para que en Tablet luzca bien */
+.app-container { 
+    max-width: 800px; 
+    width: 100%;
+    margin: auto; 
+    padding-top: 60px; 
+}
 
 /* 2. NAVEGACIÓN (TABS) */
 .tab-bar {
@@ -42,35 +47,46 @@ body {
 .card { 
     background: var(--card-bg); padding: 20px; 
     border-radius: 20px; margin-bottom: 15px; 
-    box-shadow: 0 4px 6px rgba(0,0,0,0.05); 
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    width: 100%; /* Asegura que la tarjeta use el ancho del contenedor */
+    box-sizing: border-box;
 }
 
-.btn-main { 
-    width: 100%; padding: 15px; border-radius: 12px; border: none; 
-    background: var(--primary-color); color: white; 
-    font-size: 16px; font-weight: bold; cursor: pointer;
-    transition: filter 0.2s;
-}
-.btn-main:active { filter: brightness(0.9); }
-
-.full-select, input[type="text"], input[type="number"] {
-    width: 100%; padding: 12px; margin: 10px 0;
-    border-radius: 10px; border: 1px solid #ddd;
-    box-sizing: border-box; /* Crucial para que no se salgan del borde */
-}
-
-/* 4. DASHBOARD Y FILTROS */
-.filter-bar { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
-.btn-group { display: flex; gap: 5px; }
-.btn-group button { 
-    flex: 1; padding: 10px; border-radius: 8px; border: 1px solid #ddd; 
-    background: white; cursor: pointer; font-size: 12px;
+/* 4. SLIDERS (EL LARGO DE LA BARRA) */
+#nivelPipi, #texturaPopo, .slider {
+    -webkit-appearance: none !important;
+    appearance: none !important;
+    width: 100% !important; /* Ahora sí se estirará hasta los 800px */
+    display: block !important;
+    height: 20px !important; 
+    background: #e2e8f0 !important;
+    border-radius: 10px !important;
+    margin: 30px 0 10px 0 !important;
+    cursor: pointer;
 }
 
-.range-inputs { display: flex; gap: 5px; }
-.range-inputs input { 
-    flex: 1; padding: 10px; border-radius: 8px; 
-    border: 1px solid #ddd; font-size: 12px; background: white;
+/* El círculo del slider más grande para tablet */
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none !important;
+    width: 35px !important;
+    height: 35px !important;
+    background: var(--primary-color) !important;
+    border-radius: 50% !important;
+    border: 3px solid white !important;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2) !important;
+}
+
+.range-labels {
+    display: flex !important;
+    justify-content: space-between !important;
+    width: 100% !important;
+    margin-top: 5px !important;
+    padding: 0 5px;
+}
+
+.range-labels span {
+    font-weight: bold;
+    color: var(--accent-color);
 }
 
 /* 5. EL BIBERÓN PRO */
@@ -85,7 +101,7 @@ body {
 
 .bottle-body {
     width: 90px; height: 170px;
-    background: #e2e8f0; /* Fondo gris claro para que la leche resalte */
+    background: #e2e8f0;
     border: 3px solid #cbd5e0; border-top: none;
     border-radius: 0 0 25px 25px;
     position: relative; overflow: hidden;
@@ -94,89 +110,44 @@ body {
 
 .bottle-milk {
     position: absolute; bottom: 0; width: 100%;
-    height: 0%; background: #ffffff; /* Leche blanca pura */
+    height: 0%; background: #ffffff;
     transition: height 1s cubic-bezier(0.4, 0, 0.2, 1);
     z-index: 1;
-    box-shadow: inset 0 10px 15px -10px rgba(0,0,0,0.1);
 }
 
 .total-main {
     position: absolute; z-index: 10; font-size: 24px;
-    font-weight: bold; color: #1a202c; /* Color oscuro para legibilidad */
+    font-weight: bold; color: #1a202c;
     text-shadow: 0 0 10px rgba(255,255,255,0.8); pointer-events: none;
 }
 
-.bottle-lines {
-    position: absolute; left: 8px; height: 90%; top: 5%;
-    display: flex; flex-direction: column; justify-content: space-between;
-    font-size: 11px; color: #718096; z-index: 3; font-weight: bold;
+/* 6. OTROS ESTILOS */
+.btn-main { 
+    width: 100%; padding: 15px; border-radius: 12px; border: none; 
+    background: var(--primary-color); color: white; 
+    font-size: 16px; font-weight: bold; cursor: pointer;
 }
 
-/* 6. SIDEBAR Y MENÚ */
 .sidebar {
     height: 100%; width: 0; position: fixed; z-index: 10000;
     top: 0; left: 0; background-color: #1a202c;
     overflow-x: hidden; transition: 0.5s; padding-top: 60px;
-    color: white; text-align: center;
-}
-.sidebar .closebtn {
-    position: absolute; top: 10px; right: 25px;
-    font-size: 36px; color: white; text-decoration: none;
 }
 
 .open-menu-btn {
     position: fixed; top: 15px; left: 15px; z-index: 999;
     background: var(--primary-color); color: white; border: 2px solid white;
     padding: 10px 15px; border-radius: 20px; font-weight: bold; cursor: pointer;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
 
-/* Colores de los temas */
-.color-options { display: flex; justify-content: space-around; padding: 20px; flex-wrap: wrap; gap: 10px; }
-.color-dot { width: 45px; height: 45px; border-radius: 50%; cursor: pointer; border: 3px solid white; transition: transform 0.2s; }
-.color-dot:active { transform: scale(0.9); }
-
+.color-dot { width: 45px; height: 45px; border-radius: 50%; cursor: pointer; border: 3px solid white; display: inline-block; margin: 5px; }
 .original { background: #6366f1; }
 .rosa { background: #ed64a6; }
 .bosque { background: #48bb78; }
 .noche { background: #4a5568; }
 
-/* Historial */
 .registro-item {
     background: white; padding: 12px; border-radius: 12px;
     margin-bottom: 10px; border-left: 5px solid var(--primary-color);
-    
-/* FORZAR EL LARGO DE LA BARRA (ANCHO HORIZONTAL) */
-
-#nivelPipi, #texturaPopo, .slider {
-    -webkit-appearance: none !important;
-    appearance: none !important;
-    
-    /* Esto es lo que controla el largo */
-    width: 100% !important; 
-    display: block !important;
-    box-sizing: border-box !important;
-    
-    /* Si quieres que sea aún más larga en tablets, podemos darle un ancho mínimo */
-    min-width: 100% !important; 
-    
-    height: 15px !important; /* Grosor moderado */
-    background: #e2e8f0 !important;
-    border-radius: 10px !important;
-    margin: 30px 0 10px 0 !important;
-}
-
-/* El contenedor donde están las barras (asegurémonos de que no tenga márgenes locos) */
-#opcionPipi, #opcionPopo {
-    width: 100% !important;
-    padding: 0 !important;
-    margin: 0 !important;
-}
-
-/* Ajuste de las etiquetas para que sigan el largo de la barra */
-.range-labels {
-    display: flex !important;
-    justify-content: space-between !important;
-    width: 100% !important;
-    margin-top: 5px !important;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.03);
 }
