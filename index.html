@@ -81,16 +81,16 @@
         <div id="pestaña-dashboards" style="display: none;">
     <header><h1>📊 Dashboard</h1></header>
 
-            <div class="filter-bar">
-    <button onclick="filtrarDash(24)">24h</button>
-    <button onclick="filtrarDash('semana')">1 Sem</button>
-    <button onclick="filtrarDash('mes')">1 Mes</button>
-    <div class="range-inputs">
-        <input type="date" id="fecha-inicio" onchange="filtrarPorRango()">
-        <input type="date" id="fecha-fin" onchange="filtrarPorRango()">
+    <div class="filter-bar">
+        <button onclick="filtrarDash(24)">24h</button>
+        <button onclick="filtrarDash('semana')">1 Sem</button>
+        <button onclick="filtrarDash('mes')">1 Mes</button>
+        <div class="range-inputs">
+            <input type="date" id="fecha-inicio" onchange="filtrarPorRango()">
+            <input type="date" id="fecha-fin" onchange="filtrarPorRango()">
+        </div>
     </div>
-</div>
-            
+
     <div class="card dashboard-card">
         <h3>Consumo de Leche</h3>
         
@@ -98,6 +98,8 @@
             <div class="bottle-nipple"></div>
             <div class="bottle-cap"></div>
             <div class="bottle-body">
+                <p id="total-onzas-texto" class="total-main">0 oz</p>
+                
                 <div class="bottle-lines">
                     <span>- 30</span><span>- 20</span><span>- 10</span><span>- 0</span>
                 </div>
@@ -105,8 +107,7 @@
             </div>
         </div>
 
-        <p id="total-onzas-texto" class="total-main">0 oz</p>
-        <p id="rango-texto" class="sub-text">Últimas 24 horas</p>
+        <p id="rango-texto" class="sub-text" style="text-align:center; color:#666;">Últimas 24 horas</p>
     </div>
 </div>
       
