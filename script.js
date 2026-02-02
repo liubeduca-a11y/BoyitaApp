@@ -301,8 +301,14 @@ function guardarDato(obj) {
     // Abrir y cerrar menú
 function toggleMenu() {
     const sidebar = document.getElementById("sidebar");
-    sidebar.style.width = sidebar.style.width === "250px" ? "0" : "250px";
+    // Si no tiene ancho definido o es 0, lo abrimos a 250px
+    if (!sidebar.style.width || sidebar.style.width === "0px") {
+        sidebar.style.width = "250px";
+    } else {
+        sidebar.style.width = "0px";
+    }
 }
+    
 
 // Cambiar la paleta
 function cambiarTema(tema) {
