@@ -8,16 +8,16 @@
 </head>
 <body>
 
-    <button onclick="toggleMenu()" ontouchstart="toggleMenu()" class="open-menu-btn">☰ Temas</button>
+    <button onclick="toggleMenu()" class="open-menu-btn">☰ Temas</button>
 
     <div id="sidebar" class="sidebar">
         <a href="javascript:void(0)" class="closebtn" onclick="toggleMenu()">×</a>
         <h2>Paleta de Colores</h2>
         <div class="color-options">
-            <button onclick="cambiarTema('original')" class="color-dot original"></button>
-            <button onclick="cambiarTema('rosa')" class="color-dot rosa"></button>
-            <button onclick="cambiarTema('bosque')" class="color-dot bosque"></button>
-            <button onclick="cambiarTema('noche')" class="color-dot noche"></button>
+            <div onclick="cambiarTema('original')" class="color-dot original"></div>
+            <div onclick="cambiarTema('rosa')" class="color-dot rosa"></div>
+            <div onclick="cambiarTema('bosque')" class="color-dot bosque"></div>
+            <div onclick="cambiarTema('noche')" class="color-dot noche"></div>
         </div>
     </div>
 
@@ -78,37 +78,36 @@
             </div>
         </div>
 
-   <div id="pestaña-dashboards" style="display: none;">
-    <header><h1>📊 Dashboard</h1></header>
-
-    <div class="filter-bar">
-        <div class="btn-group">
-            <button onclick="filtrarDash(24)">24h</button>
-            <button onclick="filtrarDash('semana')">1 Sem</button>
-            <button onclick="filtrarDash('mes')">1 Mes</button>
-        </div>
-        <div class="range-inputs">
-            <input type="date" id="fecha-inicio" onchange="filtrarPorRango()">
-            <input type="date" id="fecha-fin" onchange="filtrarPorRango()">
-        </div>
-    </div>
-
-    <div class="card">
-        <h3>Consumo de Leche</h3>
-        <div class="baby-bottle">
-            <div class="bottle-nipple"></div>
-            <div class="bottle-cap"></div>
-            <div class="bottle-body">
-                <p id="total-onzas-texto" class="total-main">0.0 oz</p>
-                <div class="bottle-lines">
-                    <span>- 30</span><span>- 20</span><span>- 10</span><span>- 0</span>
+        <div id="pestaña-dashboards" style="display: none;">
+            <header><h1>📊 Dashboard</h1></header>
+            <div class="filter-bar">
+                <div class="btn-group">
+                    <button onclick="filtrarDash(24)">24h</button>
+                    <button onclick="filtrarDash('semana')">1 Sem</button>
+                    <button onclick="filtrarDash('mes')">1 Mes</button>
                 </div>
-                <div id="bottle-filler" class="bottle-milk"></div>
+                <div class="range-inputs">
+                    <input type="date" id="fecha-inicio" onchange="filtrarPorRango()">
+                    <input type="date" id="fecha-fin" onchange="filtrarPorRango()">
+                </div>
             </div>
-        </div>
-        <p id="rango-texto" style="text-align:center; font-size: 14px; color: #666;">Últimas 24 horas</p>
-    </div>
-</div>    
+
+            <div class="card">
+                <h3>Consumo de Leche</h3>
+                <div class="baby-bottle">
+                    <div class="bottle-nipple"></div>
+                    <div class="bottle-cap"></div>
+                    <div class="bottle-body">
+                        <p id="total-onzas-texto" class="total-main">0.0 oz</p>
+                        <div class="bottle-lines">
+                            <span>- 30</span><span>- 20</span><span>- 10</span><span>- 0</span>
+                        </div>
+                        <div id="bottle-filler" class="bottle-milk"></div>
+                    </div>
+                </div>
+                <p id="rango-texto" style="text-align:center; font-size: 14px; color: #666;">Últimas 24 horas</p>
+            </div>
+        </div>     
 
         <div id="pestaña-historial" style="display: none;">
             <header><h1>📜 Historial</h1></header>
