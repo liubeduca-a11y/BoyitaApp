@@ -12,7 +12,9 @@ body {
     background-color: var(--bg-color); 
     color: var(--text-color);
     margin: 0; padding: 15px; 
-    transition: background 0.3s ease;
+    transition: background 0.3s ease, color 0.3s ease;
+    /* Evita el scroll horizontal molesto */
+    overflow-x: hidden;
 }
 
 .app-container { max-width: 500px; margin: auto; padding-top: 60px; }
@@ -28,6 +30,7 @@ body {
     flex: 1; padding: 12px; border: none; border-radius: 12px;
     background: white; font-weight: bold; color: #718096;
     box-shadow: 0 2px 4px rgba(0,0,0,0.05); cursor: pointer;
+    transition: 0.2s;
 }
 
 .tab-bar button.active-tab {
@@ -46,17 +49,28 @@ body {
     width: 100%; padding: 15px; border-radius: 12px; border: none; 
     background: var(--primary-color); color: white; 
     font-size: 16px; font-weight: bold; cursor: pointer;
+    transition: filter 0.2s;
+}
+.btn-main:active { filter: brightness(0.9); }
+
+.full-select, input[type="text"], input[type="number"] {
+    width: 100%; padding: 12px; margin: 10px 0;
+    border-radius: 10px; border: 1px solid #ddd;
+    box-sizing: border-box; /* Crucial para que no se salgan del borde */
 }
 
-/* 4. DASHBOARD Y FILTROS (Arreglado para Tablet) */
+/* 4. DASHBOARD Y FILTROS */
 .filter-bar { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
 .btn-group { display: flex; gap: 5px; }
-.btn-group button { flex: 1; padding: 10px; border-radius: 8px; border: 1px solid #ddd; background: white; cursor: pointer; }
+.btn-group button { 
+    flex: 1; padding: 10px; border-radius: 8px; border: 1px solid #ddd; 
+    background: white; cursor: pointer; font-size: 12px;
+}
 
 .range-inputs { display: flex; gap: 5px; }
 .range-inputs input { 
     flex: 1; padding: 10px; border-radius: 8px; 
-    border: 1px solid #ddd; font-size: 14px; background: white;
+    border: 1px solid #ddd; font-size: 12px; background: white;
 }
 
 /* 5. EL BIBERÓN PRO */
@@ -71,31 +85,31 @@ body {
 
 .bottle-body {
     width: 90px; height: 170px;
-    background: rgba(255, 255, 255, 0.9);
-    border: 3px solid #e2e8f0; border-top: none;
+    background: #e2e8f0; /* Fondo gris claro para que la leche resalte */
+    border: 3px solid #cbd5e0; border-top: none;
     border-radius: 0 0 25px 25px;
     position: relative; overflow: hidden;
     display: flex; align-items: center; justify-content: center;
-    box-shadow: inset 0 0 10px rgba(0,0,0,0.02);
 }
 
 .bottle-milk {
     position: absolute; bottom: 0; width: 100%;
-    height: 0%; background: #ffffff;
+    height: 0%; background: #ffffff; /* Leche blanca pura */
     transition: height 1s cubic-bezier(0.4, 0, 0.2, 1);
     z-index: 1;
+    box-shadow: inset 0 10px 15px -10px rgba(0,0,0,0.1);
 }
 
 .total-main {
-    position: absolute; z-index: 10; font-size: 22px;
-    font-weight: bold; color: var(--accent-color);
-    text-shadow: 0 0 8px rgba(255,255,255,0.9); pointer-events: none;
+    position: absolute; z-index: 10; font-size: 24px;
+    font-weight: bold; color: #1a202c; /* Color oscuro para legibilidad */
+    text-shadow: 0 0 10px rgba(255,255,255,0.8); pointer-events: none;
 }
 
 .bottle-lines {
     position: absolute; left: 8px; height: 90%; top: 5%;
     display: flex; flex-direction: column; justify-content: space-between;
-    font-size: 11px; color: #cbd5e0; z-index: 3;
+    font-size: 11px; color: #718096; z-index: 3; font-weight: bold;
 }
 
 /* 6. SIDEBAR Y MENÚ */
@@ -103,18 +117,38 @@ body {
     height: 100%; width: 0; position: fixed; z-index: 10000;
     top: 0; left: 0; background-color: #1a202c;
     overflow-x: hidden; transition: 0.5s; padding-top: 60px;
+    color: white; text-align: center;
+}
+.sidebar .closebtn {
+    position: absolute; top: 10px; right: 25px;
+    font-size: 36px; color: white; text-decoration: none;
 }
 
 .open-menu-btn {
-    position: fixed; top: 15px; left: 15px; z-index: 9999;
+    position: fixed; top: 15px; left: 15px; z-index: 999;
     background: var(--primary-color); color: white; border: 2px solid white;
     padding: 10px 15px; border-radius: 20px; font-weight: bold; cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
 
 /* Colores de los temas */
-.color-options { display: flex; justify-content: space-around; padding: 20px; }
-.color-dot { width: 40px; height: 40px; border-radius: 50%; cursor: pointer; border: 2px solid white; }
+.color-options { display: flex; justify-content: space-around; padding: 20px; flex-wrap: wrap; gap: 10px; }
+.color-dot { width: 45px; height: 45px; border-radius: 50%; cursor: pointer; border: 3px solid white; transition: transform 0.2s; }
+.color-dot:active { transform: scale(0.9); }
+
 .original { background: #6366f1; }
 .rosa { background: #ed64a6; }
 .bosque { background: #48bb78; }
-.noche { background: #2d3748; }
+.noche { background: #4a5568; }
+
+/* Historial */
+.registro-item {
+    background: white; padding: 12px; border-radius: 12px;
+    margin-bottom: 10px; border-left: 5px solid var(--primary-color);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+}
+
+.btn-reset {
+    background: none; border: none; color: #e53e3e; 
+    text-decoration: underline; cursor: pointer; margin-top: 20px;
+}
