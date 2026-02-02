@@ -7,6 +7,18 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <div id="sidebar" class="sidebar">
+    <a href="javascript:void(0)" class="closebtn" onclick="toggleMenu()">×</a>
+    <h2>Paleta de Colores</h2>
+    <div class="color-options">
+        <button onclick="cambiarTema('original')" class="color-dot original"></button>
+        <button onclick="cambiarTema('rosa')" class="color-dot rosa"></button>
+        <button onclick="cambiarTema('bosque')" class="color-dot bosque"></button>
+        <button onclick="cambiarTema('noche')" class="color-dot noche"></button>
+    </div>
+</div>
+
+<button onclick="toggleMenu()" class="open-menu-btn">☰ Temas</button>
     <div class="app-container"> <nav class="tab-bar">
             <button onclick="cambiarPestaña('registro')" id="tab-registro" class="active-tab">📝 Registro</button>
             <button onclick="cambiarPestaña('dashboards')" id="tab-dashboards">📊 Resumen</button>
