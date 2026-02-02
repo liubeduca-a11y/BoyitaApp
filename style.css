@@ -63,3 +63,42 @@ header { text-align: center; margin-bottom: 20px; }
     color: white;
     box-shadow: 0 4px 10px rgba(99, 102, 241, 0.3);
 }
+
+/* Variables de colores (por defecto el original) */
+:root {
+    --bg-color: #f0f2f5;
+    --card-bg: #ffffff;
+    --primary-color: #6366f1;
+    --accent-color: #4a5568;
+}
+
+/* Aplicamos las variables a lo que ya tienes */
+body { background-color: var(--bg-color); }
+.card { background-color: var(--card-bg); }
+.btn-main { background-color: var(--primary-color); }
+.active-tab { background: var(--primary-color) !important; }
+
+/* Estilos del Menú Lateral */
+.sidebar {
+    height: 100%; width: 0; position: fixed; z-index: 2000;
+    top: 0; left: 0; background-color: #1a202c;
+    overflow-x: hidden; transition: 0.5s; padding-top: 60px;
+}
+.sidebar h2 { color: white; text-align: center; font-size: 18px; }
+.sidebar .closebtn {
+    position: absolute; top: 10px; right: 25px;
+    font-size: 36px; color: white; text-decoration: none;
+}
+.open-menu-btn {
+    position: fixed; top: 15px; left: 15px; z-index: 500;
+    background: #4a5568; color: white; border: none;
+    padding: 8px 12px; border-radius: 8px; cursor: pointer;
+}
+
+/* Círculos de colores */
+.color-options { display: flex; justify-content: space-around; padding: 20px; }
+.color-dot { width: 40px; height: 40px; border-radius: 50%; border: 2px solid white; cursor: pointer; }
+.original { background: #6366f1; }
+.rosa { background: #ed64a6; }
+.bosque { background: #48bb78; }
+.noche { background: #2d3748; }
