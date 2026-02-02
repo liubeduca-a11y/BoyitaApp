@@ -12,7 +12,75 @@ function guardarDato(obj) {
     localStorage.setItem('bebeData', JSON.stringify(datos));
     
     actualizarVista(); 
+let rangoActual = 24;
+
+function filtrarPorRango() {
+    rangoActual = 'rango';
     actualizarDashboardLeche();
+}
+
+function actualizarDashboardLeche() {
+    const datos = JSON.parse(localStorage.getItem('bebeData')) || [];
+    const ahora = new Date();
+    const fInicio = document.getElementById('fecha-inicio').value;
+    const fFin = document.getElementById('fecha-fin').value;
+
+    let tomasFiltradas = datos.filter(d => {
+        if (d.tipo !== "Leche") return false;
+        
+        // Convertimos la fecha del registro (que es string) a objeto Date
+        const fechaToma = new Date(d.fecha.split(',')[0].split('/').reverse().join('-'));
+        
+        if (rangoActual === 24) {
+            const unDiaAtras = new Date(ahora.getTime() - (24 * 60 * 60 * 1000));
+            return new Date(d.fecha) >= unDiaAtras;
+        } else if (rangoActual === 'semana') {
+            const sieteDiasAtras = new Date(ahora.getTime() - (7 * 24 * 60 * 60 * 1000));
+            return new Date(d.fecha) >= sieteDiasAtras;
+        } else if (rangoActual === 'rango' && fInicio && fFin) {
+            const inicio = new Date(fInicio);
+            const fin = new Date(fFin);
+            fin.setHours(23, 59, 59); // Incluir todo el día final
+            return fechaToma >= inicio && fechaToma <= fin;
+        }
+        return false;
+    });
+
+    let totalOz = 0;
+    tomasFiltradas.forEach(t => {
+        // Extraemos solo el número del detalle (ej: "3.5 oz" -> 3.5)
+        const num = parseFloat(t.detalle.split(' ')[0]);
+        if (!isNaN(num)) totalOz += num;
+    });
+
+    // --- ACTUALIZACIÓN VISUAL ---
+    const txt = document.getElementById('total-onzas-texto');
+    const filler = document.getElementById('bottle-filler');
+    const rangoTxt = document.getElementById('rango-texto');
+
+    if (txt) txt.innerText = totalOz.toFixed(1) + " oz";
+    
+    if (filler) {
+        // Meta dinámica: 30oz por día seleccionado
+        let meta = 30;
+        if (rangoActual === 'semana') meta = 210;
+        if (rangoActual === 'rango' && fInicio && fFin) {
+            const dias = Math.ceil((new Date(fFin) - new Date(fInicio)) / (1000 * 60 * 60 * 24)) + 1;
+            meta = dias * 30;
+        }
+        
+        const porcentaje = Math.min((totalOz / meta) * 100, 100);
+        filler.style.height = porcentaje + "%";
+        // Si hay leche, que se vea blanca y sólida
+        filler.style.backgroundColor = totalOz > 0 ? "#ffffff" : "transparent";
+    }
+
+    if (rangoTxt) {
+        if (rangoActual === 'rango') rangoTxt.innerText = `Periodo: ${fInicio} al ${fFin}`;
+        else rangoTxt.innerText = rangoActual === 24 ? "Últimas 24 horas" : "Última semana";
+    }
+}
+    
 }
 
 // 3. LECHE (BIBERÓN)
