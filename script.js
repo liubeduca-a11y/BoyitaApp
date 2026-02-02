@@ -297,6 +297,39 @@ function guardarDato(obj) {
     obj.id = Date.now();
     obj.fecha = new Date().toLocaleString();
     let datos = JSON.parse(localStorage.getItem('bebeData')) || [];
+
+    // Abrir y cerrar menú
+function toggleMenu() {
+    const sidebar = document.getElementById("sidebar");
+    sidebar.style.width = sidebar.style.width === "250px" ? "0" : "250px";
+}
+
+// Cambiar la paleta
+function cambiarTema(tema) {
+    const root = document.documentElement;
+    
+    const paletas = {
+        'original': { bg: '#f0f2f5', primary: '#6366f1', accent: '#4a5568' },
+        'rosa': { bg: '#fff5f7', primary: '#ed64a6', accent: '#702459' },
+        'bosque': { bg: '#f0fff4', primary: '#48bb78', accent: '#22543d' },
+        'noche': { bg: '#1a202c', primary: '#a0aec0', accent: '#f7fafc' }
+    };
+
+    const colores = paletas[tema];
+    root.style.setProperty('--bg-color', colores.bg);
+    root.style.setProperty('--primary-color', colores.primary);
+    root.style.setProperty('--accent-color', colores.accent);
+
+    // Guardar para que no se pierda al recargar
+    localStorage.setItem('temaPreferido', tema);
+    toggleMenu(); // Cerrar al elegir
+}
+
+// Cargar tema guardado al iniciar
+window.onload = () => {
+    const guardado = localStorage.getItem('temaPreferido');
+    if (guardado) cambiarTema(guardado);
+};
     datos.push(obj);
     localStorage.setItem('bebeData', JSON.stringify(datos));
     
