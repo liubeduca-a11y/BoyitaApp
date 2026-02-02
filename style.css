@@ -2,7 +2,7 @@ body { font-family: sans-serif; background: #f0f2f5; margin: 0; padding: 15px; }
 .app-container { 
     max-width: 400px; 
     margin: auto; 
-    padding-top: 50px; /* Añadimos espacio para que el botón de temas no tape el título */
+    padding-top: 60px; /* IMPORTANTE: Espacio para que el botón de temas no estorbe */
 }
 header { text-align: center; margin-bottom: 20px; }
 .card { background: white; padding: 15px; border-radius: 15px; margin-bottom: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
@@ -45,9 +45,9 @@ header { text-align: center; margin-bottom: 20px; }
     margin-bottom: 20px;
     position: sticky;
     top: 0;
-    background: var(--bg-color); /* Usamos la variable para que cambie el color también aquí */
+    background: var(--bg-color);
     padding: 10px 0;
-    z-index: 900; /* Menor que el botón para que no lo tape */
+    z-index: 1000; /* Menor que el botón de temas */
 }
 .tab-bar button {
     flex: 1;
@@ -104,20 +104,19 @@ body { background-color: var(--bg-color); }
 
 .open-menu-btn {
     position: fixed; 
-    top: 10px; 
-    left: 10px; 
-    z-index: 2000; /* Lo subimos aún más por si acaso */
+    top: 15px; 
+    left: 15px; 
+    z-index: 5000; /* Super alto para que gane el clic */
     background: var(--primary-color); 
     color: white; 
     border: 2px solid white;
     padding: 8px 12px; 
     border-radius: 20px;
-    font-size: 12px; /* Un poco más pequeño para celular */
+    font-size: 12px;
+    font-weight: bold;
     box-shadow: 0 4px 10px rgba(0,0,0,0.3);
     cursor: pointer;
-    font-weight: bold;
 }
-
 /* Círculos de colores */
 .color-options { display: flex; justify-content: space-around; padding: 20px; }
 .color-dot { width: 40px; height: 40px; border-radius: 50%; border: 2px solid white; cursor: pointer; }
