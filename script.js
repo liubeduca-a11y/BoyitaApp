@@ -298,3 +298,62 @@ window.onload = () => {
     const guardado = localStorage.getItem('temaPreferido');
     if (guardado) cambiarTema(guardado);
 };
+let rangoActual = 24; // Por defecto 24 horas
+
+function filtrarDash(rango) {
+    rangoActual = rango;
+    document.getElementById('rango-texto').innerText = 
+        rango === 24 ? "Últimas 24 horas" : `Último ${rango === 'semana' ? 'semana' : 'mes'}`;
+    actualizarDashboardLeche();
+}
+
+function filtrarPorFecha(fechaSeleccionada) {
+    rangoActual = 'fecha';
+    document.getElementById('rango-texto').innerText = "Día: " + fechaSeleccionada;
+    actualizarDashboardLeche(fechaSeleccionada);
+}
+
+function actualizarDashboardLeche(fechaEspecifica = null) {
+    const datos = JSON.parse(localStorage.getItem('bebeData')) || [];
+    const ahora = new Date();
+    
+    let tomasFiltradas = datos.filter(d => {
+        if (d.tipo !== "Leche") return false;
+        const fechaToma = new Date(d.fecha.split(',')[0].split('/').reverse().join('-')); // Ajuste de formato fecha
+        
+        if (rangoActual === 24) {
+            const diffHoras = (ahora - new Date(d.fecha)) / (1000 * 60 * 60);
+            return diffHoras <= 24;
+        } else if (rangoActual === 'semana') {
+            const diffDias = (ahora - new Date(d.fecha)) / (1000 * 60 * 60 * 24);
+            return diffDias <= 7;
+        } else if (rangoActual === 'mes') {
+            const diffDias = (ahora - new Date(d.fecha)) / (1000 * 60 * 60 * 24);
+            return diffDias <= 30;
+        } else if (rangoActual === 'fecha') {
+            return d.fecha.includes(fechaEspecifica.split('-').reverse().join('/'));
+        }
+        return false;
+    });
+
+    let totalOz = 0;
+    tomasFiltradas.forEach(t => {
+        const num = parseFloat(t.detalle);
+        if (!isNaN(num)) totalOz += num;
+    });
+
+    // Actualizar visuales
+    document.getElementById('total-onzas-texto').innerText = totalOz.toFixed(1) + " oz";
+    const filler = document.getElementById('bottle-filler');
+    if (filler) {
+        // La meta cambia según el rango (30oz por día)
+        let meta = 30;
+        if (rangoActual === 'semana') meta = 210;
+        if (rangoActual === 'mes') meta = 900;
+        
+        const porcentaje = Math.min((totalOz / meta) * 100, 100);
+        filler.style.height = porcentaje + "%";
+        // Si es leche, que sea blanca; si está vacío, que no se vea
+        filler.style.background = totalOz > 0 ? "#f9f9f9" : "transparent";
+    }
+}
