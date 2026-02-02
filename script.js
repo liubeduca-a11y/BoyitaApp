@@ -187,24 +187,31 @@ function actualizarVista() {
     const lista = document.getElementById('listaRegistros');
     if (!lista) return;
     const datos = JSON.parse(localStorage.getItem('bebeData')) || [];
+    
     lista.innerHTML = datos.slice().reverse().map(d => `
-        <div class="registro-item">
-            <small>${d.fechaTexto || d.fecha}</small><br>
-            <strong>${d.tipo}:</strong> ${d.detalle}
-            <button onclick="borrarRegistro(${d.id})" style="float:right; color:red; background:none; border:none; cursor:pointer;">🗑️</button>
+        <div class="registro-item" style="cursor: pointer; border-left: 5px solid var(--primary-color); margin-bottom: 10px; padding: 10px; background: white; border-radius: 8px;" onclick="editarRegistro(${d.id})">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <small style="color: #666;">${d.fechaTexto || d.fecha}</small><br>
+                    <strong>${d.tipo}:</strong> ${d.detalle}
+                </div>
+                <button onclick="event.stopPropagation(); borrarRegistro(${d.id})" style="color:red; background:none; border:none; font-size: 20px; cursor:pointer;">🗑️</button>
+            </div>
+            <div style="font-size: 10px; color: var(--primary-color); margin-top: 5px; font-weight: bold;">📝 Toca para editar</div>
         </div>
     `).join('');
 }
 
 function borrarRegistro(id) {
-    if(confirm("¿Borrar este registro?")) {
-        let datos = JSON.parse(localStorage.getItem('bebeData')).filter(d => d.id !== id);
+    if(confirm("¿Estás seguro de que quieres eliminar este registro?")) {
+        let datos = JSON.parse(localStorage.getItem('bebeData')) || [];
+        datos = datos.filter(d => d.id !== id);
         localStorage.setItem('bebeData', JSON.stringify(datos));
+        
         actualizarVista();
-        actualizarDashboardLeche();
+        actualizarDashboardLeche(); // Muy importante para que el biberón baje si borras una toma
     }
 }
-
 // 7. MENÚ, TEMAS Y UTILIDADES
 function toggleMenu() {
     const s = document.getElementById("sidebar");
@@ -239,3 +246,31 @@ window.onload = () => {
     actualizarBotonesLeche();
     if (localStorage.getItem('temaPreferido')) cambiarTema(localStorage.getItem('temaPreferido'));
 };
+
+function editarRegistro(id) {
+    let datos = JSON.parse(localStorage.getItem('bebeData')) || [];
+    const indice = datos.findIndex(d => d.id === id);
+    if (indice === -1) return;
+
+    const registro = datos[indice];
+    
+    // Abrimos ventana para editar el texto
+    const nuevoDetalle = prompt(`Modificar registro de ${registro.tipo}:`, registro.detalle);
+    
+    // Si el usuario no canceló y escribió algo
+    if (nuevoDetalle !== null && nuevoDetalle.trim() !== "") {
+        datos[indice].detalle = nuevoDetalle;
+        
+        // Si es leche, intentamos detectar si cambió el número de onzas para el biberón
+        if (registro.tipo === "Leche") {
+            const numeroDetectado = nuevoDetalle.match(/(\d+(\.\d+)?)/);
+            if (numeroDetectado) {
+                datos[indice].valorOz = parseFloat(numeroDetectado[0]);
+            }
+        }
+
+        localStorage.setItem('bebeData', JSON.stringify(datos));
+        actualizarVista();
+        actualizarDashboardLeche(); // Esto actualiza el dibujo del biberón
+    }
+}
