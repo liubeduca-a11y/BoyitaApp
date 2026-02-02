@@ -145,60 +145,49 @@ body {
 .registro-item {
     background: white; padding: 12px; border-radius: 12px;
     margin-bottom: 10px; border-left: 5px solid var(--primary-color);
+/* FUERZA BRUTA PARA SLIDERS EN TABLET */
 
-/* ELIMINAR EL ESTILO POR DEFECTO Y FORZAR TAMAÑO */
-.slider {
-    -webkit-appearance: none; /* Obligatorio para Chrome/Safari */
-    appearance: none;
-    width: 100%;
-    height: 25px !important; /* Aumentamos el grosor de la barra */
-    background: #e2e8f0;
-    border-radius: 15px;
-    outline: none;
-    margin: 30px 0 15px 0; /* Más espacio para no tocar botones por error */
+#nivelPipi, #texturaPopo, .slider {
+    -webkit-appearance: none !important;
+    appearance: none !important;
+    width: 100% !important;
+    height: 40px !important; /* Barra muy gruesa */
+    background: #e2e8f0 !important;
+    border-radius: 20px !important;
+    margin: 20px 0 !important;
+    display: block !important;
 }
 
-/* EL BOTÓN (CÍRCULO) PARA MOVER - CHROME, SAFARI, EDGE */
+/* EL BOTÓN (CÍRCULO) - FORZANDO TAMAÑO GIGANTE */
+#nivelPipi::-webkit-slider-thumb, 
+#texturaPopo::-webkit-slider-thumb,
 .slider::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 45px !important; /* ¡Casi el doble de grande! */
-    height: 45px !important;
-    background: var(--primary-color);
-    border: 4px solid white;
-    border-radius: 50%;
-    cursor: pointer;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-    margin-top: 0px; /* Ajuste para centrarlo si es necesario */
+    -webkit-appearance: none !important;
+    appearance: none !important;
+    width: 60px !important; /* Tamaño XL para dedo */
+    height: 60px !important;
+    background: var(--primary-color) !important;
+    border: 5px solid white !important;
+    border-radius: 50% !important;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3) !important;
+    cursor: pointer !important;
 }
 
-/* EL BOTÓN PARA FIREFOX */
-.slider::-moz-range-thumb {
-    width: 45px !important;
-    height: 45px !important;
-    background: var(--primary-color);
-    border: 4px solid white;
-    border-radius: 50%;
-    cursor: pointer;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-}
-
-/* AJUSTE DE LAS ETIQUETAS (Poco, Medio, Lleno) */
+/* ETIQUETAS - ESPACIADO EXTRA */
 .range-labels {
-    display: flex;
-    justify-content: space-between;
-    padding: 0 10px;
-    margin-top: 5px;
+    display: flex !important;
+    justify-content: space-between !important;
+    padding: 10px 5px 0 5px !important;
+    margin-top: 10px !important;
 }
 
 .range-labels span {
-    font-size: 16px; /* Letras un poco más grandes */
-    font-weight: 800;
-    color: var(--accent-color);
-    flex: 1;
+    font-size: 18px !important; /* Letras grandes */
+    font-weight: bold !important;
+    color: #4a5568 !important;
+    min-width: 60px;
     text-align: center;
 }
 
-/* Alineamos la primera etiqueta a la izquierda y la última a la derecha */
-.range-labels span:first-child { text-align: left; }
-.range-labels span:last-child { text-align: right; }
+
+
