@@ -7,19 +7,23 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="sidebar" class="sidebar">
-    <a href="javascript:void(0)" class="closebtn" onclick="toggleMenu()">×</a>
-    <h2>Paleta de Colores</h2>
-    <div class="color-options">
-        <button onclick="cambiarTema('original')" class="color-dot original"></button>
-        <button onclick="cambiarTema('rosa')" class="color-dot rosa"></button>
-        <button onclick="cambiarTema('bosque')" class="color-dot bosque"></button>
-        <button onclick="cambiarTema('noche')" class="color-dot noche"></button>
-    </div>
-</div>
 
-<button onclick="toggleMenu()" class="open-menu-btn">☰ Temas</button>
-    <div class="app-container"> <nav class="tab-bar">
+    <div id="sidebar" class="sidebar">
+        <a href="javascript:void(0)" class="closebtn" onclick="toggleMenu()">×</a>
+        <h2>Paleta de Colores</h2>
+        <div class="color-options">
+            <button onclick="cambiarTema('original')" class="color-dot original"></button>
+            <button onclick="cambiarTema('rosa')" class="color-dot rosa"></button>
+            <button onclick="cambiarTema('bosque')" class="color-dot bosque"></button>
+            <button onclick="cambiarTema('noche')" class="color-dot noche"></button>
+        </div>
+    </div>
+
+    <button onclick="toggleMenu()" class="open-menu-btn">☰ Temas</button>
+
+    <div class="app-container"> 
+        
+        <nav class="tab-bar">
             <button onclick="cambiarPestaña('registro')" id="tab-registro" class="active-tab">📝 Registro</button>
             <button onclick="cambiarPestaña('dashboards')" id="tab-dashboards">📊 Resumen</button>
             <button onclick="cambiarPestaña('historial')" id="tab-historial">📜 Historial</button>
@@ -30,16 +34,16 @@
                 <h1>🍼 Boyita Tracker</h1>
                 <p id="fecha-actual"></p>
             </header>
+
             <div class="card">
-    <h3>Leche (Biberón)</h3>
-    <button id="btn-leche" onclick="toggleLeche()" class="btn-main" style="background-color: #6366f1;">Iniciar Toma 🍼</button>
-    
-    <div id="detalle-toma" style="display:none; margin-top:15px; border-top: 1px solid #eee; padding-top:10px;">
-        <p><strong>Finalizar toma:</strong></p>
-        <input type="number" id="oz-final" inputmode="decimal" placeholder="¿Cuántas oz quedaron?">
-        <input type="text" id="notaLeche" placeholder="Nota de la toma (opcional)...">
-    </div>
-</div>
+                <h3>Leche (Biberón)</h3>
+                <button id="btn-leche" onclick="toggleLeche()" class="btn-main" style="background-color: #6366f1;">Iniciar Toma 🍼</button>
+                <div id="detalle-toma" style="display:none; margin-top:15px; border-top: 1px solid #eee; padding-top:10px;">
+                    <p><strong>Finalizar toma:</strong></p>
+                    <input type="number" id="oz-final" inputmode="decimal" placeholder="¿Cuántas oz quedaron?">
+                    <input type="text" id="notaLeche" placeholder="Nota de la toma (opcional)...">
+                </div>
+            </div>
 
             <div class="card">
                 <h3>Pañales</h3>
@@ -74,7 +78,9 @@
                     <input type="text" id="notaSueno" placeholder="Notas del sueño...">
                 </div>
             </div>
-        </div> <div id="pestaña-dashboards" style="display: none;">
+        </div> 
+
+        <div id="pestaña-dashboards" style="display: none;">
             <header>
                 <h1>📊 Resumen de Boyita</h1>
             </header>
@@ -99,6 +105,7 @@
             <button onclick="descargarCSV()" class="btn-main" style="background-color: #10b981;">📥 Descargar CSV</button>
             <button onclick="resetearApp()" class="btn-reset">Borrar todo y empezar de cero</button>
         </div>
+
     </div> <script src="script.js"></script>
 </body>
 </html>
