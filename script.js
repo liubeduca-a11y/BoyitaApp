@@ -1,6 +1,7 @@
 // 1. INICIO
 document.getElementById('fecha-actual').innerText = new Date().toLocaleDateString();
 let durmiendo = localStorage.getItem('horaInicio') !== null;
+let tomandoLeche = localStorage.getItem('inicioLeche') !== null;
 
 // 2. GUARDADO GENÉRICO
 function guardarDato(obj) {
