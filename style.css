@@ -145,6 +145,51 @@ body {
 .registro-item {
     background: white; padding: 12px; border-radius: 12px;
     margin-bottom: 10px; border-left: 5px solid var(--primary-color);
+
+    /* MEJORA DE SLIDERS (PAÑALES) */
+
+/* El contenedor del slider para darle espacio */
+#opcionPipi, #opcionPopo {
+    padding: 10px 5px;
+}
+
+/* El slider en sí */
+.slider {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 15px; /* Más grueso para tocar fácil */
+    border-radius: 10px;
+    background: #e2e8f0;
+    outline: none;
+    margin: 20px 0 10px 0;
+}
+
+/* El "puntito" o control del slider para Chrome/Safari/Edge */
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background: var(--primary-color);
+    cursor: pointer;
+    border: 3px solid white;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+/* Las etiquetas debajo del slider */
+.range-labels {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 5px;
+    margin-bottom: 15px;
+}
+
+.range-labels span {
+    font-size: 13px;
+    font-weight: bold;
+    color: var(--accent-color);
+}
     box-shadow: 0 2px 4px rgba(0,0,0,0.03);
 }
 
