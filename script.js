@@ -1,4 +1,4 @@
-// 1. INICIO
+// 1. VARIABLES GLOBALES E INICIO
 document.getElementById('fecha-actual').innerText = new Date().toLocaleDateString();
 let durmiendo = localStorage.getItem('horaInicio') !== null;
 let tomandoLeche = localStorage.getItem('inicioLeche') !== null;
@@ -10,11 +10,12 @@ function guardarDato(obj) {
     let datos = JSON.parse(localStorage.getItem('bebeData')) || [];
     datos.push(obj);
     localStorage.setItem('bebeData', JSON.stringify(datos));
-    actualizarVista();
-    actualizarDashboardLeche(); // Mantiene el biberón al día al guardar
+    
+    actualizarVista(); 
+    actualizarDashboardLeche();
 }
 
-// 3. LECHE Y PAÑALES
+// 3. LECHE (BIBERÓN)
 function toggleLeche() {
     const btn = document.getElementById('btn-leche');
     const detalleDiv = document.getElementById('detalle-toma');
@@ -22,20 +23,14 @@ function toggleLeche() {
     const inputNota = document.getElementById('notaLeche');
 
     if (!tomandoLeche) {
-        // --- INICIO DE LA TOMA ---
         const ozIniciales = prompt("¿Con cuántas onzas inicia el biberón?", "4");
-        
-        if (ozIniciales === null || ozIniciales === "") return; // Cancelado
+        if (ozIniciales === null || ozIniciales === "") return;
 
         localStorage.setItem('inicioLeche', new Date().toISOString());
         localStorage.setItem('ozIniciales', ozIniciales);
-        
         tomandoLeche = true;
-        btn.innerText = "Finalizar Toma 🏁";
-        btn.style.backgroundColor = "#10b981";
-        detalleDiv.style.display = "block";
+        actualizarBotonesLeche();
     } else {
-        // --- FIN DE LA TOMA ---
         const inicio = new Date(localStorage.getItem('inicioLeche'));
         const ozIniciales = parseFloat(localStorage.getItem('ozIniciales'));
         const ozRestantes = parseFloat(inputFinal.value);
@@ -46,7 +41,6 @@ function toggleLeche() {
             return;
         }
 
-        // Cálculos
         const duracionMinutos = Math.round((fin - inicio) / 1000 / 60);
         const ozConsumidas = (ozIniciales - ozRestantes).toFixed(1);
         const nota = inputNota.value.trim();
@@ -56,25 +50,37 @@ function toggleLeche() {
             return;
         }
 
-        // Guardar
         let detalleFinal = `${ozConsumidas} oz (Dura: ${duracionMinutos} min)`;
         if (nota) detalleFinal += ` - Nota: ${nota}`;
 
         guardarDato({ tipo: "Leche", detalle: detalleFinal });
 
-        // Resetear
         localStorage.removeItem('inicioLeche');
         localStorage.removeItem('ozIniciales');
         tomandoLeche = false;
         
-        btn.innerText = "Iniciar Toma 🍼";
-        btn.style.backgroundColor = "#6366f1";
         detalleDiv.style.display = "none";
         inputFinal.value = "";
         inputNota.value = "";
+        actualizarBotonesLeche();
     }
 }
 
+function actualizarBotonesLeche() {
+    const btn = document.getElementById('btn-leche');
+    const detalle = document.getElementById('detalle-toma');
+    if(tomandoLeche) {
+        btn.innerText = "Finalizar Toma 🏁";
+        btn.style.backgroundColor = "#10b981";
+        detalle.style.display = "block";
+    } else {
+        btn.innerText = "Iniciar Toma 🍼";
+        btn.style.backgroundColor = "#6366f1";
+        detalle.style.display = "none";
+    }
+}
+
+// 4. PAÑALES
 function cambiarVistaPañal() {
     const tipo = document.getElementById('tipoPañal').value;
     document.getElementById('opcionPipi').style.display = tipo === 'pipi' ? 'block' : 'none';
@@ -101,7 +107,7 @@ function guardarPañal() {
     document.getElementById('notaPañal').value = "";
 }
 
-// 4. SUEÑO
+// 5. SUEÑO
 function toggleSueno() {
     const btn = document.getElementById('btn-sueno');
     const detalleDiv = document.getElementById('detalle-despertar');
@@ -146,13 +152,14 @@ function actualizarBotonesSueno() {
     }
 }
 
-// 5. HISTORIAL Y EDICIÓN
+// 6. HISTORIAL Y EDICIÓN
 function actualizarVista() {
     const lista = document.getElementById('listaRegistros');
+    if (!lista) return;
     const datos = JSON.parse(localStorage.getItem('bebeData')) || [];
     
     lista.innerHTML = datos.slice().reverse().map(d => `
-        <div class="registro-item" id="reg-${d.id}">
+        <div class="registro-item">
             <div id="content-${d.id}">
                 <small>${d.fecha}</small><br>
                 <strong>${d.tipo}:</strong> <span>${d.detalle}</span>
@@ -162,27 +169,13 @@ function actualizarVista() {
                 </div>
             </div>
             <div id="form-${d.id}" style="display:none;">
-                <input type="text" id="input-${d.id}" value="${d.detalle}" style="width: 80%; padding: 5px; border: 1px solid #6366f1; border-radius: 5px;">
-                <button onclick="guardarEdicion(${d.id})" style="background: #10b981; color: white; border: none; border-radius: 5px; padding: 5px 10px;">✅</button>
-                <button onclick="actualizarVista()" style="background: #ccc; color: white; border: none; border-radius: 5px; padding: 5px 10px;">❌</button>
+                <input type="text" id="input-${d.id}" value="${d.detalle}" style="width: 70%;">
+                <button onclick="guardarEdicion(${d.id})">✅</button>
+                <button onclick="actualizarVista()">❌</button>
             </div>
         </div>
     `).join('');
 }
-
-// Añade esto donde tienes tus otras llamadas iniciales (como actualizarVista)
-function actualizarBotonesLeche() {
-    const btn = document.getElementById('btn-leche');
-    const detalle = document.getElementById('detalle-toma');
-    if(tomandoLeche) {
-        btn.innerText = "Finalizar Toma 🏁";
-        btn.style.backgroundColor = "#10b981";
-        detalle.style.display = "block";
-    }
-}
-
-// Y llámala al final del archivo
-actualizarBotonesLeche();
 
 function borrarRegistro(id) {
     if(confirm("¿Seguro que quieres borrar este registro?")) {
@@ -202,45 +195,30 @@ function habilitarEdicion(id) {
 function guardarEdicion(id) {
     let datos = JSON.parse(localStorage.getItem('bebeData')) || [];
     const nuevoDetalle = document.getElementById(`input-${id}`).value;
-    
-    datos = datos.map(d => {
-        if (d.id === id) { return { ...d, detalle: nuevoDetalle }; }
-        return d;
-    });
-    
+    datos = datos.map(d => (d.id === id ? { ...d, detalle: nuevoDetalle } : d));
     localStorage.setItem('bebeData', JSON.stringify(datos));
     actualizarVista();
     actualizarDashboardLeche();
 }
 
-// 6. DASHBOARDS Y NAVEGACIÓN
+// 7. DASHBOARDS Y NAVEGACIÓN
 function cambiarPestaña(pestaña) {
-    console.log("Cambiando a:", pestaña); // Esto nos dirá en la consola si el clic funciona
-
     const reg = document.getElementById('pestaña-registro');
     const dash = document.getElementById('pestaña-dashboards');
     const hist = document.getElementById('pestaña-historial');
-
     const btnReg = document.getElementById('tab-registro');
     const btnDash = document.getElementById('tab-dashboards');
     const btnHist = document.getElementById('tab-historial');
 
-    // Verificación de seguridad: Si alguno no existe, no sigas para no romper la app
-    if (!reg || !dash || !hist) {
-        console.error("Error: No se encontró una de las pestañas en el HTML");
-        return;
-    }
+    if (!reg || !dash || !hist) return;
 
-    // Ocultar todo
     reg.style.display = 'none';
     dash.style.display = 'none';
     hist.style.display = 'none';
-
     btnReg.classList.remove('active-tab');
     btnDash.classList.remove('active-tab');
     btnHist.classList.remove('active-tab');
 
-    // Mostrar la seleccionada
     if (pestaña === 'registro') {
         reg.style.display = 'block';
         btnReg.classList.add('active-tab');
@@ -251,9 +229,10 @@ function cambiarPestaña(pestaña) {
     } else if (pestaña === 'historial') {
         hist.style.display = 'block';
         btnHist.classList.add('active-tab');
-        actualizarVista(); // Esto es lo que "dibuja" la lista
+        actualizarVista();
     }
 }
+
 function actualizarDashboardLeche() {
     const datos = JSON.parse(localStorage.getItem('bebeData')) || [];
     const hoy = new Date().toLocaleDateString();
@@ -267,12 +246,34 @@ function actualizarDashboardLeche() {
 
     const txt = document.getElementById('total-onzas-texto');
     const filler = document.getElementById('bottle-filler');
-    
     if(txt) txt.innerText = totalOz + " oz";
     if(filler) {
         const porcentaje = Math.min((totalOz / 30) * 100, 100);
         filler.style.height = porcentaje + "%";
     }
+}
+
+// 8. MENÚ Y TEMAS (FUERA DE OTRAS FUNCIONES)
+function toggleMenu() {
+    const sidebar = document.getElementById("sidebar");
+    if (!sidebar) return;
+    sidebar.style.width = (sidebar.style.width === "250px") ? "0px" : "250px";
+}
+
+function cambiarTema(tema) {
+    const root = document.documentElement;
+    const paletas = {
+        'original': { bg: '#f0f2f5', primary: '#6366f1', accent: '#4a5568' },
+        'rosa': { bg: '#fff5f7', primary: '#ed64a6', accent: '#702459' },
+        'bosque': { bg: '#f0fff4', primary: '#48bb78', accent: '#22543d' },
+        'noche': { bg: '#1a202c', primary: '#a0aec0', accent: '#f7fafc' }
+    };
+    const colores = paletas[tema];
+    root.style.setProperty('--bg-color', colores.bg);
+    root.style.setProperty('--primary-color', colores.primary);
+    root.style.setProperty('--accent-color', colores.accent);
+    localStorage.setItem('temaPreferido', tema);
+    toggleMenu();
 }
 
 function descargarCSV() {
@@ -288,58 +289,12 @@ function resetearApp() {
     if(confirm("¿Borrar todo?")) { localStorage.clear(); location.reload(); }
 }
 
-// INICIALIZACIÓN
-actualizarVista();
-actualizarBotonesSueno();
-actualizarDashboardLeche();
-
-function guardarDato(obj) {
-    obj.id = Date.now();
-    obj.fecha = new Date().toLocaleString();
-    let datos = JSON.parse(localStorage.getItem('bebeData')) || [];
-
-    // Abrir y cerrar menú
-function toggleMenu() {
-    const sidebar = document.getElementById("sidebar");
-    // Si no tiene ancho definido o es 0, lo abrimos a 250px
-    if (!sidebar.style.width || sidebar.style.width === "0px") {
-        sidebar.style.width = "250px";
-    } else {
-        sidebar.style.width = "0px";
-    }
-}
-    
-
-// Cambiar la paleta
-function cambiarTema(tema) {
-    const root = document.documentElement;
-    
-    const paletas = {
-        'original': { bg: '#f0f2f5', primary: '#6366f1', accent: '#4a5568' },
-        'rosa': { bg: '#fff5f7', primary: '#ed64a6', accent: '#702459' },
-        'bosque': { bg: '#f0fff4', primary: '#48bb78', accent: '#22543d' },
-        'noche': { bg: '#1a202c', primary: '#a0aec0', accent: '#f7fafc' }
-    };
-
-    const colores = paletas[tema];
-    root.style.setProperty('--bg-color', colores.bg);
-    root.style.setProperty('--primary-color', colores.primary);
-    root.style.setProperty('--accent-color', colores.accent);
-
-    // Guardar para que no se pierda al recargar
-    localStorage.setItem('temaPreferido', tema);
-    toggleMenu(); // Cerrar al elegir
-}
-
-// Cargar tema guardado al iniciar
+// 9. INICIALIZACIÓN FINAL
 window.onload = () => {
+    actualizarVista();
+    actualizarBotonesSueno();
+    actualizarBotonesLeche();
+    actualizarDashboardLeche();
     const guardado = localStorage.getItem('temaPreferido');
     if (guardado) cambiarTema(guardado);
 };
-    datos.push(obj);
-    localStorage.setItem('bebeData', JSON.stringify(datos));
-    
-    // Esto actualiza las pestañas "fantasma" aunque no las estés viendo
-    actualizarVista(); 
-    actualizarDashboardLeche();
-}
