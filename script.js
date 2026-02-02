@@ -4,10 +4,9 @@ let durmiendo = localStorage.getItem('horaInicio') !== null;
 let tomandoLeche = localStorage.getItem('inicioLeche') !== null;
 let rangoActual = 24; 
 
-// 2. GUARDADO GENÉRICO (Corregido para ser compatible con filtros)
+// 2. GUARDADO GENÉRICO
 function guardarDato(obj) {
     obj.id = Date.now();
-    // Guardamos la fecha en ISO para que el Dashboard siempre pueda leerla sin errores
     obj.fechaISO = new Date().toISOString(); 
     obj.fechaTexto = new Date().toLocaleString();
     
@@ -54,9 +53,67 @@ function toggleLeche() {
     actualizarBotonesLeche();
 }
 
-// ... (Tus funciones de actualizarBotonesLeche, Pañales y Sueño están bien, mantenlas igual) ...
+function actualizarBotonesLeche() {
+    const btn = document.getElementById('btn-leche');
+    const detalle = document.getElementById('detalle-toma');
+    if(tomandoLeche) {
+        btn.innerText = "Finalizar Toma 🏁";
+        btn.style.backgroundColor = "#10b981";
+        detalle.style.display = "block";
+    } else {
+        btn.innerText = "Iniciar Toma 🍼";
+        btn.style.backgroundColor = "var(--primary-color)";
+        detalle.style.display = "none";
+    }
+}
 
-// 5. DASHBOARD Y FILTROS (CORREGIDO)
+// 4. PAÑALES Y SUEÑO
+function cambiarVistaPañal() {
+    const tipo = document.getElementById('tipoPañal').value;
+    document.getElementById('opcionPipi').style.display = tipo === 'pipi' ? 'block' : 'none';
+    document.getElementById('opcionPopo').style.display = tipo === 'popo' ? 'block' : 'none';
+}
+
+function guardarPañal() {
+    const tipo = document.getElementById('tipoPañal').value;
+    const nota = document.getElementById('notaPañal').value;
+    let det = (tipo === 'pipi') ? 
+        "Pipi: " + ["Poco", "Medio", "Lleno"][document.getElementById('nivelPipi').value - 1] : 
+        "Popo: " + ["Líquida", "Pastosa", "Dura", "Sangre"][document.getElementById('texturaPopo').value - 1];
+    
+    if (nota) det += ` - Nota: ${nota}`;
+    guardarDato({ tipo: "Pañal", detalle: det });
+    document.getElementById('notaPañal').value = "";
+}
+
+function toggleSueno() {
+    if (!durmiendo) {
+        localStorage.setItem('horaInicio', new Date().toISOString());
+        durmiendo = true;
+    } else {
+        const inicio = new Date(localStorage.getItem('horaInicio'));
+        const duracion = Math.round((new Date() - inicio) / 1000 / 60);
+        let det = `Durmió ${duracion} min (${document.getElementById('estadoDespertar').value})`;
+        if (document.getElementById('notaSueno').value) det += ` - Nota: ${document.getElementById('notaSueno').value}`;
+        guardarDato({ tipo: "Sueño", detalle: det });
+        localStorage.removeItem('horaInicio');
+        durmiendo = false;
+        document.getElementById('notaSueno').value = ""; 
+    }
+    actualizarBotonesSueno();
+}
+
+function actualizarBotonesSueno() {
+    const btn = document.getElementById('btn-sueno');
+    const det = document.getElementById('detalle-despertar');
+    if (btn) {
+        btn.innerText = durmiendo ? "¡Despertó! ☀️" : "Empezó a dormir 🌙";
+        btn.style.backgroundColor = durmiendo ? "#f59e0b" : "#4a5568";
+    }
+    if (det) det.style.display = durmiendo ? "block" : "none";
+}
+
+// 5. DASHBOARD (Llamado desde tu código anterior)
 function filtrarDash(rango) {
     rangoActual = rango;
     actualizarDashboardLeche();
@@ -75,17 +132,12 @@ function actualizarDashboardLeche() {
 
     let tomasFiltradas = datos.filter(d => {
         if (d.tipo !== "Leche") return false;
-        
-        // Usamos fechaISO para mayor precisión, si no existe usamos la fecha normal
         const fechaToma = d.fechaISO ? new Date(d.fechaISO) : new Date(d.fecha);
         
-        if (rangoActual === 24) {
-            return (ahora - fechaToma) <= (24 * 60 * 60 * 1000);
-        } else if (rangoActual === 'semana') {
-            return (ahora - fechaToma) <= (7 * 24 * 60 * 60 * 1000);
-        } else if (rangoActual === 'mes') {
-            return (ahora - fechaToma) <= (30 * 24 * 60 * 60 * 1000);
-        } else if (rangoActual === 'rango' && fInicio && fFin) {
+        if (rangoActual === 24) return (ahora - fechaToma) <= (24 * 60 * 60 * 1000);
+        if (rangoActual === 'semana') return (ahora - fechaToma) <= (7 * 24 * 60 * 60 * 1000);
+        if (rangoActual === 'mes') return (ahora - fechaToma) <= (30 * 24 * 60 * 60 * 1000);
+        if (rangoActual === 'rango' && fInicio && fFin) {
             const inicio = new Date(fInicio + "T00:00:00");
             const fin = new Date(fFin + "T23:59:59");
             return fechaToma >= inicio && fechaToma <= fin;
@@ -93,45 +145,44 @@ function actualizarDashboardLeche() {
         return false;
     });
 
-    // Sumar Onzas (Limpieza de strings para evitar NaN)
-    let totalOz = 0;
-    tomasFiltradas.forEach(t => {
-        const num = t.valorOz || parseFloat(t.detalle);
-        if (!isNaN(num)) totalOz += num;
-    });
+    let totalOz = tomasFiltradas.reduce((acc, t) => acc + (t.valorOz || parseFloat(t.detalle) || 0), 0);
 
-    // Actualizar Biberón
-    const txtOz = document.getElementById('total-onzas-texto');
-    if (txtOz) txtOz.innerText = totalOz.toFixed(1) + " oz";
+    document.getElementById('total-onzas-texto').innerText = totalOz.toFixed(1) + " oz";
     
     const filler = document.getElementById('bottle-filler');
-    const rangoTxt = document.getElementById('rango-texto');
-
     let meta = 30;
     if (rangoActual === 'semana') meta = 210;
     if (rangoActual === 'mes') meta = 900;
     if (rangoActual === 'rango' && fInicio && fFin) {
-        const dias = Math.ceil((new Date(fFin) - new Date(fInicio)) / (86400000)) + 1;
+        const dias = Math.ceil((new Date(fFin) - new Date(fInicio)) / 86400000) + 1;
         meta = dias * 30;
     }
 
     if (filler) {
         const porcentaje = Math.min((totalOz / meta) * 100, 100);
         filler.style.height = porcentaje + "%";
-        filler.style.backgroundColor = totalOz > 0 ? "#ffffff" : "transparent";
-    }
-
-    if (rangoTxt) {
-        if (rangoActual === 'rango' && fInicio) {
-            rangoTxt.innerText = `Periodo: ${fInicio} al ${fFin}`;
-        } else {
-            const labels = { '24': 'Últimas 24 horas', 'semana': 'Última semana', 'mes': 'Último mes' };
-            rangoTxt.innerText = labels[rangoActual] || "Personalizado";
-        }
     }
 }
 
-// 6. HISTORIAL (Corregido para mostrar fechaTexto)
+// 6. NAVEGACIÓN Y VISTAS
+function cambiarPestaña(pestaña) {
+    const tabs = ['pestaña-registro', 'pestaña-dashboards', 'pestaña-historial'];
+    const btns = ['tab-registro', 'tab-dashboards', 'tab-historial'];
+    
+    tabs.forEach(t => {
+        const el = document.getElementById(t);
+        if(el) el.style.display = t === 'pestaña-' + pestaña ? 'block' : 'none';
+    });
+    
+    btns.forEach(b => {
+        const el = document.getElementById(b);
+        if(el) el.classList.toggle('active-tab', b === 'tab-' + pestaña);
+    });
+
+    if (pestaña === 'dashboards') actualizarDashboardLeche();
+    if (pestaña === 'historial') actualizarVista();
+}
+
 function actualizarVista() {
     const lista = document.getElementById('listaRegistros');
     if (!lista) return;
@@ -145,4 +196,46 @@ function actualizarVista() {
     `).join('');
 }
 
-// ... (Manten tus funciones de toggleMenu, cambiarTema y window.onload igual) ...
+function borrarRegistro(id) {
+    if(confirm("¿Borrar este registro?")) {
+        let datos = JSON.parse(localStorage.getItem('bebeData')).filter(d => d.id !== id);
+        localStorage.setItem('bebeData', JSON.stringify(datos));
+        actualizarVista();
+        actualizarDashboardLeche();
+    }
+}
+
+// 7. MENÚ, TEMAS Y UTILIDADES
+function toggleMenu() {
+    const s = document.getElementById("sidebar");
+    s.style.width = (s.style.width === "250px") ? "0px" : "250px";
+}
+
+function cambiarTema(tema) {
+    const p = {
+        'original': ['#f0f2f5', '#6366f1'], 'rosa': ['#fff5f7', '#ed64a6'],
+        'bosque': ['#f0fff4', '#48bb78'], 'noche': ['#1a202c', '#a0aec0']
+    };
+    document.documentElement.style.setProperty('--bg-color', p[tema][0]);
+    document.documentElement.style.setProperty('--primary-color', p[tema][1]);
+    localStorage.setItem('temaPreferido', tema);
+}
+
+function descargarCSV() {
+    const datos = JSON.parse(localStorage.getItem('bebeData')) || [];
+    let csv = "Fecha,Tipo,Detalle\n" + datos.map(d => `"${d.fechaTexto}","${d.tipo}","${d.detalle}"`).join("\n");
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'boyita_tracker.csv'; a.click();
+}
+
+function resetearApp() {
+    if (confirm("¿Borrar TODO?")) { localStorage.clear(); location.reload(); }
+}
+
+window.onload = () => {
+    actualizarBotonesSueno();
+    actualizarBotonesLeche();
+    if (localStorage.getItem('temaPreferido')) cambiarTema(localStorage.getItem('temaPreferido'));
+};
